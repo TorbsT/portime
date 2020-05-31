@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8816352003611350856}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AllRotator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 1425709793298430083}
   - component: {fileID: 4803490279448080502}
   - component: {fileID: 6198245308863229991}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 101935072596072616}
   - component: {fileID: 8933917874368653420}
   - component: {fileID: 3950727908992185906}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1769871927495209058}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CameraPlaceholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: 6684168578114254898}
   - component: {fileID: -8468189054726295646}
   - component: {fileID: 6143226818162771939}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,12 +353,16 @@ MonoBehaviour:
     m_Bits: 256
   clampVerticalRotation: 1
   groundDistance: 0.4
-  mouseSensitivity: 10
+  mouseSensitivity: 4
   mouseSensitivityRatio: 0.3
   movementSpeed: 2
   jumpForce: 6
   minimumX: -90
   maximumX: 90
+  mouseX: 0
+  mouseY: 0
+  moveSide: 0
+  moveForward: 0
 --- !u!114 &6143226818162771939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -372,12 +376,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ActorAllRotator: {fileID: 0}
-  ActorPrefab: {fileID: 337555059363079474, guid: fd9cbac654a777f45a17d20b3490ef3b,
+  ActorPrefab: {fileID: 6171806825213553132, guid: 0ee13694c0a445e458977a04333e133d,
     type: 3}
-  isReplaying: 0
   isActor: 1
   isShadow: 0
   isPlayer: 1
+  shadowMouseX: 0
+  shadowMouseY: 0
+  shadowMoveSide: 0
+  shadowMoveForward: 0
 --- !u!1 &5406295803667976575
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +397,7 @@ GameObject:
   - component: {fileID: 6554411713895746546}
   - component: {fileID: 255914773721375471}
   - component: {fileID: 719080582109417708}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: WallCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -8,126 +8,183 @@ public class TimeBody : MonoBehaviour
     public Transform ActorAllRotator;
     public GameObject ActorPrefab;
 
-    public bool isReplaying = false;
     public bool isActor = false;
     public bool isShadow = false;
     public bool isPlayer = false;
-
+    bool ePressed = false;
+    bool rPressed = false;
 
     int framesPlayed;
     int framesStart;
     int framesStop;
-
     int framesRecorded = 0;
+    float pauseTimeFor = 1f;
+
+
+    public float shadowMouseX;
+    public float shadowMouseY;
+    public float shadowMoveSide;
+    public float shadowMoveForward;
+    public bool shadowJump;
 
     Quaternion actorAllRotation;
     Vector3 lastVelocity = new Vector3(0f, 0f, 0f);
 
-    List<PointInTime> pointsInTime;
+    List<BasicFrame> basicHistory;
+    List<ActorFrame> actorHistory;
     Rigidbody rb;
+    Actor actor;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
-        if (!isShadow)
-            pointsInTime = new List<PointInTime>();
+        if (isPlayer)
+            actorHistory = new List<ActorFrame>();
+        if (!isShadow)  // Creates empty history for new objects (not shadows!)
+            basicHistory = new List<BasicFrame>();
         else
             framesPlayed = 0;
         rb = GetComponent<Rigidbody>();
+
         if (isActor)
         {
+            actor = GetComponent<Actor>();
             ActorAllRotator = this.gameObject.transform.GetChild(0);
         }
-        else
-            ActorAllRotator = null;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("e")  )
+        if (Input.GetKeyDown("e"))
         {
-            if (isPlayer)
-            {
-                CreateShadow();
-            } else if (isShadow)
-            {
-                framesPlayed = 0;
-            }
-            else
-            {
-                Restart();
-            }
+            ePressed = true;
         }
+        if (Input.GetKeyDown("r"))
+            rPressed = true;
     }
 
     void FixedUpdate()
     {
-        if (isShadow)
+        pauseTimeFor -= Time.fixedDeltaTime;
+        if (pauseTimeFor > 0)
+        {
+            rb.isKinematic = true;
+            return;
+        }
+        else if (pauseTimeFor > -1)
+            rb.isKinematic = false;
+
+        if (ePressed)
+        {
+            ePressed = false;
+            rb.isKinematic = true;
+            pauseTimeFor = Time.fixedDeltaTime * 2;
+            if (isPlayer)
+            {
+                CreateShadow();
+            }
+            else if (isShadow)
+            {
+                framesPlayed = 0;
+            }
+            else  // Objects remove their history and resets to initial
+            {
+                Restart();
+            }
+        }
+        if (rPressed)
+        {
+            rPressed = false;
+        }
+
+        if (isPlayer)
+        {
+            actor.UpdateAsPlayer();
+            Record();
+        }
+        else if (isShadow)
         {
             Replay();
         }
         else
             Record();
+
+        
     }
     void Replay()
     {
-        if (isShadow)
+        if (framesPlayed == 0)
+            ReplayFrame(framesStart);
+        else if (framesPlayed < framesStop-framesStart)  
         {
-            Debug.Log("frame nr. " + framesPlayed + ", framesStart: " + framesStart + ", framesStop: " + framesStop + ", lengde: " + pointsInTime.Count);
-            if (framesPlayed < framesStop-framesStart)
-            {
-                ReplayFrame(framesPlayed+framesStart);
-                //if (isShadow && pointsInTime.Count > 1)
-                //    pointsInTime.RemoveAt(pointsInTime.Count - 1);
-            } else
-            {
-                Debug.Log("Æ DØR");
-                //framesPlayed = 0;
-                // TODO: Gjør at shadows har deep copy av history
-                // JK fant en anna metode
-                //Object.Destroy(this.gameObject);
-                transform.position = new Vector3(0f, 0f, 0f);
-            }
-            framesPlayed++;
+            ReplayFrameUsingInput(framesPlayed+framesStart);
+        } else
+        {
+            // STORE AWAY FOR LATER USE
+            transform.position = new Vector3(0f, 0f, 0f);
         }
-    }
-    void DeepCopy()
-    {
-
+        framesPlayed++;
     }
     void Restart()
     {
         ReplayFrame(0);
-        pointsInTime.RemoveRange(1, pointsInTime.Count-1);  // Removes everything except first frame
+        basicHistory.RemoveRange(1, basicHistory.Count-1);  // First frame is necessary for future restarts
+    }
+    void ReplayFrameUsingInput(int index)
+    {
+        ActorFrame actorFrame = actorHistory[index];
+        shadowMouseX = actorFrame.mouseX;
+        shadowMouseY = actorFrame.mouseY;
+        shadowMoveSide = actorFrame.moveSide;
+        shadowMoveForward = actorFrame.moveForward;
+        shadowJump = actorFrame.jump;
+
+        actor.UpdateAsShadow();
     }
     void ReplayFrame(int index)
     {
-        PointInTime pointInTime = pointsInTime[index];
-        transform.position = pointInTime.position;
-        transform.rotation = pointInTime.rotation;
-        rb.velocity = pointInTime.velocity;
         if (isActor)
         {
-            ActorAllRotator.transform.rotation = pointInTime.actorAllRotation;
+            ActorFrame actorFrame = actorHistory[index];
+            ActorAllRotator.transform.rotation = actorFrame.actorAllRotation;
         }
+        BasicFrame basicFrame = basicHistory[index];
+        transform.position = basicFrame.position;
+        transform.rotation = basicFrame.rotation;
+        rb.velocity = basicFrame.velocity;
+        rb.angularVelocity = basicFrame.angularVelocity;
     }
     void Record()
     {
-        if (pointsInTime.Count > Mathf.Round(60f / Time.fixedDeltaTime))
+        // ALL time objects record basic history, just in case.
+        if (basicHistory.Count > Mathf.Round(60f / Time.fixedDeltaTime))
         {
+            TimeUp();
             Debug.LogError("bruh");
-            pointsInTime.RemoveAt(0);
+            basicHistory.RemoveAt(0);
         }
+        basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
 
+        // actors record input & extra rotation as well.
         if (isActor)
+        {
+            if (actorHistory.Count > Mathf.Round(60f / Time.fixedDeltaTime))
+            {
+                TimeUp();
+                Debug.LogError("bruh");
+                actorHistory.RemoveAt(0);
+            }
             actorAllRotation = ActorAllRotator.transform.rotation;
-        else
-            actorAllRotation = Quaternion.Euler(0f, 0f, 0f);
-        pointsInTime.Insert(pointsInTime.Count, new PointInTime(transform.position, transform.rotation, rb.velocity, actorAllRotation));
+            actorHistory.Insert(actorHistory.Count, new ActorFrame(actorAllRotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump));
+
+        }
+        
         framesRecorded++;
+    }
+    void TimeUp()
+    {
+        Debug.Log("basicHistory: " + basicHistory.Count + ", actorHistory: " + actorHistory.Count);
     }
 
     void CreateShadow()
@@ -136,9 +193,10 @@ public class TimeBody : MonoBehaviour
         TimeBody ShadowProperties = Shadow.GetComponent<TimeBody>();
         ShadowProperties.isShadow = true;
         ShadowProperties.isPlayer = false;
-        ShadowProperties.framesStart = pointsInTime.Count-framesRecorded;
-        ShadowProperties.framesStop = pointsInTime.Count;
-        ShadowProperties.pointsInTime = pointsInTime;
+        ShadowProperties.framesStart = basicHistory.Count-framesRecorded;
+        ShadowProperties.framesStop = basicHistory.Count;
+        ShadowProperties.basicHistory = basicHistory;
+        ShadowProperties.actorHistory = actorHistory;
 
         framesRecorded = 0;
     }
