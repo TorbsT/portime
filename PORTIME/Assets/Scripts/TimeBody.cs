@@ -195,6 +195,7 @@ public class TimeBody : MonoBehaviour
         ShadowProperties.isPlayer = false;
         ShadowProperties.framesStart = basicHistory.Count-framesRecorded;
         ShadowProperties.framesStop = basicHistory.Count;
+        //ShadowProperties.pauseTimeFor = 0f;
         ShadowProperties.basicHistory = basicHistory;
         ShadowProperties.actorHistory = actorHistory;
 
