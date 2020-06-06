@@ -22,11 +22,13 @@ public class Actor : MonoBehaviour
     public float moveForward = 0f;
     public bool jump = false;
 
+    Animator animator;
     Rigidbody rb;
     TimeBody timeBody;
     bool isGrounded;
     void Start()
     {
+        animator = GetComponent<Animator>();
         timeBody = gameObject.GetComponent<TimeBody>();
         rb = GetComponent<Rigidbody>();
     }
@@ -67,6 +69,17 @@ public class Actor : MonoBehaviour
         AllRotator.transform.localRotation *= Quaternion.Euler(-mouseY, 0f, 0f);
         if (clampVerticalRotation)
             AllRotator.transform.localRotation = ClampRotationAroundXAxis(AllRotator.transform.localRotation);
+
+        animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
+    }
+    void GoodMethod()
+    {
+        if (moveSide * moveForward == 0)
+            rb.AddForce(10f * transform.forward * (moveSide + moveForward));
+        else
+            rb.AddForce(10f * transform.forward * (moveSide + moveForward) / 2);
+        if (jump && isGrounded)
+            rb.AddForce(10f * transform.up * jumpForce);
     }
     void BadMethod()
     {

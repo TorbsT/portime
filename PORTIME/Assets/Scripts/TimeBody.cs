@@ -116,7 +116,7 @@ public class TimeBody : MonoBehaviour
     {
         if (framesPlayed == 0)
             ReplayFrame(framesStart);
-        else if (framesPlayed < framesStop-framesStart)  
+        else if (isShadow) //framesPlayed < framesStop-framesStart)  
         {
             ReplayFrameUsingInput(framesPlayed+framesStart);
         } else
