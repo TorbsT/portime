@@ -36,7 +36,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 7356101744871501964}
-    m_Position: {x: 380, y: -20, z: 0}
+    m_Position: {x: 320, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3634786480242147615}
     m_Position: {x: 440, y: 170, z: 0}
@@ -110,7 +110,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Walk Forward
+  m_Name: Aim Gun
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -151,7 +151,8 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 099b7329319dbb64fbfec38ccb2cef73, type: 2}
+  m_Motion: {fileID: -1851481605707757408, guid: c9fda50c3fb70854b9930bb8efeb3047,
+    type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

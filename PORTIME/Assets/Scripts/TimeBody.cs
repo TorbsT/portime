@@ -5,7 +5,7 @@ using UnityEngine;
 public class TimeBody : MonoBehaviour
 {
 
-    Transform Head;
+    public Transform TorsoSocket;
     public GameObject ActorPrefab;
 
     public bool isActor = false;
@@ -34,6 +34,7 @@ public class TimeBody : MonoBehaviour
     List<ActorFrame> actorHistory;
     Rigidbody rb;
     Actor actor;
+    Animator animator;
 
 
     // Start is called before the first frame update
@@ -41,7 +42,7 @@ public class TimeBody : MonoBehaviour
     {
         if (isPlayer)
             actorHistory = new List<ActorFrame>();
-        if (!isShadow)  // Creates empty history for new objects (not shadows!)
+        if (!isShadow)  // Creates empty history for new objects (not shadows, they already have one)
             basicHistory = new List<BasicFrame>();
         else
             framesPlayed = 0;
@@ -51,9 +52,12 @@ public class TimeBody : MonoBehaviour
         if (isActor)
         {
             actor = GetComponent<Actor>();
-            Head = this.gameObject.transform.GetChild(0);
+            //Head = this.gameObject.transform.GetChild(0);
         }
-        
+        if (isShadow)
+            rb.isKinematic = true;
+            animator = GetComponent<Animator>();
+
     }
 
     void Update()
@@ -74,14 +78,12 @@ public class TimeBody : MonoBehaviour
             rb.isKinematic = true;
             return;
         }
-        else if (pauseTimeFor > -1)
+        else if (pauseTimeFor > -1 && !isShadow)
             rb.isKinematic = false;
 
         if (ePressed)
         {
             ePressed = false;
-            rb.isKinematic = true;
-            pauseTimeFor = Time.fixedDeltaTime * 2;
             if (isPlayer)
             {
                 CreateShadow();
@@ -120,7 +122,8 @@ public class TimeBody : MonoBehaviour
             ReplayFrame(framesStart);
         else if (isShadow) //framesPlayed < framesStop-framesStart)  
         {
-            ReplayFrameUsingInput(framesPlayed+framesStart);
+            ReplayFrame(framesPlayed + framesStart);
+            //ReplayFrameUsingInput(framesPlayed+framesStart);
         } else
         {
             // STORE AWAY FOR LATER USE
@@ -146,16 +149,19 @@ public class TimeBody : MonoBehaviour
     }
     void ReplayFrame(int index)
     {
-        if (isActor)
-        {
-            ActorFrame actorFrame = actorHistory[index];
-            Head.transform.rotation = actorFrame.actorHead;
-        }
         BasicFrame basicFrame = basicHistory[index];
         transform.position = basicFrame.position;
         transform.rotation = basicFrame.rotation;
         rb.velocity = basicFrame.velocity;
         rb.angularVelocity = basicFrame.angularVelocity;
+
+        if (isActor)
+        {
+            ActorFrame actorFrame = actorHistory[index];
+            TorsoSocket.transform.rotation = actorFrame.torsoRotation;
+            animator.SetFloat("Velocity", basicFrame.velocity.sqrMagnitude);
+        }
+
     }
     void Record()
     {
@@ -177,8 +183,8 @@ public class TimeBody : MonoBehaviour
                 Debug.LogError("bruh");
                 actorHistory.RemoveAt(0);
             }
-            actorAllRotation = Head.transform.rotation;
-            actorHistory.Insert(actorHistory.Count, new ActorFrame(actorAllRotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump));
+            //actorAllRotation = Head.transform.rotation;
+            actorHistory.Insert(actorHistory.Count, new ActorFrame(TorsoSocket.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump));
 
         }
         

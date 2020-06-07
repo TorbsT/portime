@@ -2,7 +2,8 @@
 
 public class Actor : MonoBehaviour
 {
-    public GameObject Head;
+    public Transform TorsoSocket;
+    public GameObject HeadSocket;
     public GameObject CameraPlaceholder;
     public Transform groundCheck;
     public LayerMask groundMask;
@@ -13,8 +14,8 @@ public class Actor : MonoBehaviour
     public float mouseSensitivityRatio = 0.3f;
     public float movementSpeed = 1f;
     public float jumpForce = 20f;
-    public float minimumX = -9F;
-    public float maximumX = 9F;
+    //public float minimumX = -9F;
+    //public float maximumX = 9F;
 
     public float mouseX = 0;
     public float mouseY = 0f;
@@ -22,7 +23,7 @@ public class Actor : MonoBehaviour
     public float moveForward = 0f;
     public bool jump = false;
 
-    float viewRange = 60.0f;
+    public float viewRange = 60.0f;
 
     // for debug of input-ratio
     float inputCounter;
@@ -77,22 +78,12 @@ public class Actor : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         BadMethod();
 
-
-
-        transform.localRotation *= Quaternion.Euler(0, mouseX, 0f);
-        Head.transform.localRotation *= Quaternion.Euler(-mouseY, 0f, 0f);
+        transform.localRotation *= Quaternion.Euler(0f, mouseX, 0f);
+        TorsoSocket.localRotation *= Quaternion.Euler(0f, mouseY, 0f);
         if (clampVerticalRotation)
-            //Head.transform.localRotation = ClampRotation(Head.transform.localRotation);
-            //Head.transform.localEulerAngles = new Vector3(Mathf.Clamp(Head.transform.localEulerAngles.x, -viewRange, viewRange), Head.transform.localEulerAngles.y, Head.transform.localEulerAngles.z);
-            Head.transform.localEulerAngles = ClampVerticalRotation(Head.transform.localEulerAngles);
+            TorsoSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
 
         animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
-
-        currentPhysicalValue = transform.localRotation.y;
-        inputCounter += Mathf.Abs(mouseX);
-        physicalCounter += Mathf.Abs(currentPhysicalValue - lastPhysicalValue);
-        Debug.Log(inputCounter + ", " + physicalCounter);
-        lastPhysicalValue = currentPhysicalValue;
     }
     void GoodMethod()
     {
@@ -116,30 +107,17 @@ public class Actor : MonoBehaviour
     {
         Vector3 resultVector = originalRotation;
 
-        if (originalRotation.x > viewRange && originalRotation.x < 180f)
+        if (originalRotation.y > viewRange && originalRotation.y < 180f)
         {
             //Debug.Log(originalRotation.x);
-            resultVector.x = viewRange;
+            resultVector.y = viewRange;
         }
-        else if (originalRotation.x < 360f - viewRange && originalRotation.x > 180f)
+        else if (originalRotation.y < 360f - viewRange && originalRotation.y > 180f)
         {
             //Debug.Log(originalRotation.x);
-            resultVector.x = -viewRange;
+            resultVector.y = -viewRange;
         }
 
         return resultVector;
-    }
-    Quaternion ClampRotationAroundXAxis(Quaternion q)
-    {
-        q.x /= q.w;
-        q.y /= q.w;
-        q.z /= q.w;
-        q.w = 1f;
-
-        float angleX = 2f * Mathf.Rad2Deg * Mathf.Atan(q.x);
-        angleX = Mathf.Clamp(angleX, minimumX, maximumX);
-        q.x = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleX);
-
-        return q;
     }
 }
