@@ -2,7 +2,7 @@
 
 public class Actor : MonoBehaviour
 {
-    public GameObject AllRotator;
+    public GameObject Head;
     public GameObject CameraPlaceholder;
     public Transform groundCheck;
     public LayerMask groundMask;
@@ -13,14 +13,22 @@ public class Actor : MonoBehaviour
     public float mouseSensitivityRatio = 0.3f;
     public float movementSpeed = 1f;
     public float jumpForce = 20f;
-    public float minimumX = -90F;
-    public float maximumX = 90F;
+    public float minimumX = -9F;
+    public float maximumX = 9F;
 
-    public float mouseX = 0f;
+    public float mouseX = 0;
     public float mouseY = 0f;
     public float moveSide = 0f;
     public float moveForward = 0f;
     public bool jump = false;
+
+    float viewRange = 60.0f;
+
+    // for debug of input-ratio
+    float inputCounter;
+    float physicalCounter;
+    float currentPhysicalValue;
+    float lastPhysicalValue;
 
     Animator animator;
     Rigidbody rb;
@@ -28,16 +36,20 @@ public class Actor : MonoBehaviour
     bool isGrounded;
     void Start()
     {
+        inputCounter = 0;
+        physicalCounter = 0;
+        currentPhysicalValue = 0f;
+        lastPhysicalValue = currentPhysicalValue;
         animator = GetComponent<Animator>();
         timeBody = gameObject.GetComponent<TimeBody>();
         rb = GetComponent<Rigidbody>();
     }
     public void UpdateAsShadow()
     {
-        mouseX = timeBody.shadowMouseX/4;
+        mouseX = timeBody.shadowMouseX/4;  // /4
         mouseY = timeBody.shadowMouseY;
-        moveSide = timeBody.shadowMoveSide/2;
-        moveForward = timeBody.shadowMoveForward/2;
+        moveSide = timeBody.shadowMoveSide/2;  // /2
+        moveForward = timeBody.shadowMoveForward/2;  // /2
         jump = timeBody.shadowJump;
 
         PerformPhysics();
@@ -65,12 +77,22 @@ public class Actor : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         BadMethod();
 
-        transform.Rotate(Vector3.up, mouseX, Space.Self);
-        AllRotator.transform.localRotation *= Quaternion.Euler(-mouseY, 0f, 0f);
+
+
+        transform.localRotation *= Quaternion.Euler(0, mouseX, 0f);
+        Head.transform.localRotation *= Quaternion.Euler(-mouseY, 0f, 0f);
         if (clampVerticalRotation)
-            AllRotator.transform.localRotation = ClampRotationAroundXAxis(AllRotator.transform.localRotation);
+            //Head.transform.localRotation = ClampRotation(Head.transform.localRotation);
+            //Head.transform.localEulerAngles = new Vector3(Mathf.Clamp(Head.transform.localEulerAngles.x, -viewRange, viewRange), Head.transform.localEulerAngles.y, Head.transform.localEulerAngles.z);
+            Head.transform.localEulerAngles = ClampVerticalRotation(Head.transform.localEulerAngles);
 
         animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
+
+        currentPhysicalValue = transform.localRotation.y;
+        inputCounter += Mathf.Abs(mouseX);
+        physicalCounter += Mathf.Abs(currentPhysicalValue - lastPhysicalValue);
+        Debug.Log(inputCounter + ", " + physicalCounter);
+        lastPhysicalValue = currentPhysicalValue;
     }
     void GoodMethod()
     {
@@ -89,6 +111,23 @@ public class Actor : MonoBehaviour
         if (jump && isGrounded)
             relVel.y = jumpForce;
         rb.velocity = transform.TransformDirection(relVel);
+    }
+    Vector3 ClampVerticalRotation(Vector3 originalRotation)
+    {
+        Vector3 resultVector = originalRotation;
+
+        if (originalRotation.x > viewRange && originalRotation.x < 180f)
+        {
+            //Debug.Log(originalRotation.x);
+            resultVector.x = viewRange;
+        }
+        else if (originalRotation.x < 360f - viewRange && originalRotation.x > 180f)
+        {
+            //Debug.Log(originalRotation.x);
+            resultVector.x = -viewRange;
+        }
+
+        return resultVector;
     }
     Quaternion ClampRotationAroundXAxis(Quaternion q)
     {

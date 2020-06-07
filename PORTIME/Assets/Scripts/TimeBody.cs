@@ -5,7 +5,7 @@ using UnityEngine;
 public class TimeBody : MonoBehaviour
 {
 
-    public Transform ActorAllRotator;
+    Transform Head;
     public GameObject ActorPrefab;
 
     public bool isActor = false;
@@ -47,11 +47,13 @@ public class TimeBody : MonoBehaviour
             framesPlayed = 0;
         rb = GetComponent<Rigidbody>();
 
+        
         if (isActor)
         {
             actor = GetComponent<Actor>();
-            ActorAllRotator = this.gameObject.transform.GetChild(0);
+            Head = this.gameObject.transform.GetChild(0);
         }
+        
     }
 
     void Update()
@@ -147,7 +149,7 @@ public class TimeBody : MonoBehaviour
         if (isActor)
         {
             ActorFrame actorFrame = actorHistory[index];
-            ActorAllRotator.transform.rotation = actorFrame.actorAllRotation;
+            Head.transform.rotation = actorFrame.actorHead;
         }
         BasicFrame basicFrame = basicHistory[index];
         transform.position = basicFrame.position;
@@ -175,7 +177,7 @@ public class TimeBody : MonoBehaviour
                 Debug.LogError("bruh");
                 actorHistory.RemoveAt(0);
             }
-            actorAllRotation = ActorAllRotator.transform.rotation;
+            actorAllRotation = Head.transform.rotation;
             actorHistory.Insert(actorHistory.Count, new ActorFrame(actorAllRotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump));
 
         }

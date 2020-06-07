@@ -2,7 +2,7 @@
 
 public class ActorFrame
 {
-    public Quaternion actorAllRotation;
+    public Quaternion actorHead;
 
     // INPUT
     public float mouseX;
@@ -11,9 +11,9 @@ public class ActorFrame
     public float moveForward;
     public bool jump;
 
-    public ActorFrame(Quaternion _actorAllRotation, float _mouseX, float _mouseY, float _moveSide, float _moveForward, bool _jump)
+    public ActorFrame(Quaternion _actorHead, float _mouseX, float _mouseY, float _moveSide, float _moveForward, bool _jump)
     {
-        actorAllRotation = _actorAllRotation;
+        actorHead = _actorHead;
 
         mouseX = _mouseX;
         mouseY = _mouseY;
