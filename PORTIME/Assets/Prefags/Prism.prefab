@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 2691332439064516450}
   - component: {fileID: 2691332439064516451}
   - component: {fileID: 2851615722855038712}
+  - component: {fileID: 4149879923793971553}
   m_Layer: 8
   m_Name: Prism
-  m_TagString: Untagged
+  m_TagString: grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba4637269012632489877e99b6fdf657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActorAllRotator: {fileID: 0}
+  TorsoSocket: {fileID: 0}
   ActorPrefab: {fileID: 0}
   isActor: 0
   isShadow: 0
@@ -132,3 +133,15 @@ MonoBehaviour:
   shadowMoveSide: 0
   shadowMoveForward: 0
   shadowJump: 0
+--- !u!114 &4149879923793971553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691332439064516380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf869230bdfb4d40b7d7b38b97440d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

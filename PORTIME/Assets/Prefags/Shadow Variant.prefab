@@ -82,6 +82,11 @@ PrefabInstance:
       propertyPath: isPlayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 224867699934286341, guid: 096d13c06dc29684bad72e0695cf2c56,
+        type: 3}
+      propertyPath: hoverMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 910da7fcd56b0844e81d572b02cfa0c0, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 096d13c06dc29684bad72e0695cf2c56, type: 3}
 --- !u!1 &6171806825213553132 stripped

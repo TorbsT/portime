@@ -3,8 +3,8 @@
 public class Actor : MonoBehaviour
 {
     public Transform TorsoSocket;
-    public GameObject HeadSocket;
-    public GameObject CameraPlaceholder;
+    public Transform HeadSocket;
+    public Transform CameraSocket;
     public Transform groundCheck;
     public LayerMask groundMask;
 
@@ -34,6 +34,7 @@ public class Actor : MonoBehaviour
     Animator animator;
     Rigidbody rb;
     TimeBody timeBody;
+    SelectionManager selectionManager;
     bool isGrounded;
     void Start()
     {
@@ -42,7 +43,8 @@ public class Actor : MonoBehaviour
         currentPhysicalValue = 0f;
         lastPhysicalValue = currentPhysicalValue;
         animator = GetComponent<Animator>();
-        timeBody = gameObject.GetComponent<TimeBody>();
+        timeBody = GetComponent<TimeBody>();
+        selectionManager = GetComponent<SelectionManager>();
         rb = GetComponent<Rigidbody>();
     }
     public void UpdateAsShadow()
@@ -82,6 +84,8 @@ public class Actor : MonoBehaviour
         TorsoSocket.localRotation *= Quaternion.Euler(0f, mouseY, 0f);
         if (clampVerticalRotation)
             TorsoSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
+
+        selectionManager.ItemSelection();
 
         animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
     }
