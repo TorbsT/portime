@@ -6,7 +6,7 @@ public class GameMaster : MonoBehaviour
 {
     public float timeLeft;
 
-    readonly float totalTime = 60f;
+    readonly float totalTime = 120f;
 
     private void Awake()
     {

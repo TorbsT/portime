@@ -11,8 +11,9 @@ public class SelectionManager : MonoBehaviour
     GameObject hoverItem;
     GameObject newHoverItem;
     public GameObject grabbedItem = null;
-    Item itemScript;
-    Item newItemScript;
+    Item grabbedItemScript;
+    Item hoverItemScript;
+    Item newHoverItemScript;
     public void ItemSelection(bool grab, bool drop)
     {
         RaycastHit hit;
@@ -23,7 +24,7 @@ public class SelectionManager : MonoBehaviour
             if (hit.collider.CompareTag(grabbableTag))
             {
                 newHoverItem = hit.collider.gameObject;
-                newItemScript = newHoverItem.GetComponent<Item>();
+                newHoverItemScript = newHoverItem.GetComponent<Item>();
 
                 if (newHoverItem != hoverItem)
                 {
@@ -33,37 +34,32 @@ public class SelectionManager : MonoBehaviour
                 if (grab)
                 {
                     grabbedItem = hoverItem;
-                    itemScript.Interact(gameObject, "grab");
-                    Debug.Log("Grabbed!");
+                    grabbedItemScript = grabbedItem.GetComponent<Item>();
+                    hoverItemScript.Interact(gameObject, "grab");
                 }
-                else if (drop)
-                {
-                    itemScript.Interact(gameObject, "drop");
-                    Debug.Log("Drobbed!");
-                }
-                // dank code that maybe runs
             }
             else ClearHover("isnt grabbable");  // When looking at an object, but it isn't grabbable
         }
         else ClearHover("not looking at an object");  // When not looking at an object
+        if (drop && grabbedItem != null)
+        {
+            grabbedItemScript.Interact(gameObject, "drop");
+        }
     }
 
     void SetHover(string message)
     {
-        //Debug.Log(message);
         hoverItem = newHoverItem;
-        itemScript = newItemScript;
-        newItemScript.Interact(this.gameObject, "hover");
+        hoverItemScript = newHoverItemScript;
+        newHoverItemScript.Interact(this.gameObject, "hover");
     }
     void ClearHover(string message)
     {
-        //Debug.Log(message);
         if (hoverItem != null)
         {
-            //Debug.Log(message);
-            itemScript.Interact(this.gameObject, "unhover");
+            hoverItemScript.Interact(this.gameObject, "unhover");
             hoverItem = null;
-            itemScript = null;
+            hoverItemScript = null;
         }
     }
 }

@@ -40,12 +40,12 @@ public class Item : MonoBehaviour
 
     public void Interact(GameObject interactor, string action)
     {
-        if (action == "hover" && false)  // big brain
+        if (action == "hover")  // big brain
         {
             if (interactor == player)
                 gameObject.GetComponent<Renderer>().material = interactor.GetComponent<SelectionManager>().hoverMaterial;
         }
-        if (action == "unhover" && false)
+        if (action == "unhover")
         {
             if (interactor == player)
             {
@@ -56,7 +56,9 @@ public class Item : MonoBehaviour
         {
             if (grabber != null) grabber.GetComponent<SelectionManager>().grabbedItem = null;
             grabber = interactor;
-            gameObject.GetComponent<Renderer>().material = interactor.GetComponent<SelectionManager>().hoverMaterial;
+            
+
+            //gameObject.GetComponent<Renderer>().material = interactor.GetComponent<SelectionManager>().hoverMaterial;
         }
         if (action == "drop")  // ONLY CALL WHEN ACTUALLY UNGRABBING
         {
@@ -67,31 +69,22 @@ public class Item : MonoBehaviour
     }
     void Hold()
     {
-        gameObject.transform.position = largeItemSocket.position;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.position = largeItemSocket.position;
+        transform.rotation = largeItemSocket.rotation;
     }
     void Equip()
     {
         actorCollider = grabber.GetComponent<Collider>();
         rb.useGravity = false;
         largeItemSocket = grabber.GetComponent<SelectionManager>().largeItemSocket;
+        if (grabber == player) GetComponent<Renderer>().material = initialMaterial;
     }
-    void Drop()
+    public void Drop()
     {
         rb.useGravity = true;
         grabber = null;
-        gameObject.GetComponent<Renderer>().material = initialMaterial;
-    }
-    void OnCollisionStay(Collision collision)
-    {
-        Debug.LogWarning("Layer as static name, possible cause for collision bugs");
-        //if (collision.gameObject.layer.Equals("Actors"))
-        //{
-            Debug.Log("bruh");
-            if (collision.gameObject == grabber)
-            {
-                Debug.Log("nice");
-                actorCollider = grabber.GetComponent<Collider>();
-            }
-        //}
+        //gameObject.GetComponent<Renderer>().material = initialMaterial;
     }
 }

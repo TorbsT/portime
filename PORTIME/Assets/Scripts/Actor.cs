@@ -25,6 +25,14 @@ public class Actor : MonoBehaviour
     public bool grab = false;
     public bool drop = false;
 
+    float inputMouseX;
+    float inputMouseY;
+    float inputMoveSide;
+    float inputMoveForward;
+    bool inputJump;
+    bool inputGrab;
+    bool inputDrop;
+
     public float viewRange = 60.0f;
 
     // for debug of input-ratio
@@ -61,19 +69,35 @@ public class Actor : MonoBehaviour
 
         PerformPhysics();
     }
+    void Update()
+    {
+        inputMouseX = Input.GetAxis("Mouse X");
+        inputMouseY = Input.GetAxis("Mouse Y");
+
+        inputMoveSide = Input.GetAxisRaw("Horizontal");
+        inputMoveForward = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown("space")) inputJump = true;
+        if (Input.GetKeyDown("e")) inputGrab = true;
+        if (Input.GetKeyDown("q")) inputDrop = true;
+    }
     public void UpdateAsPlayer()
     {
-        mouseX = Input.GetAxis("Mouse X");
-        mouseY = Input.GetAxis("Mouse Y");
+        mouseX = inputMouseX;
+        mouseY = inputMouseY;
+        moveSide = inputMoveSide;
+        moveForward = inputMoveForward;
+        jump = inputJump;
+        grab = inputGrab;
+        drop = inputDrop;
 
-        moveSide = Input.GetAxisRaw("Horizontal");
-        moveForward = Input.GetAxisRaw("Vertical");
-
-        jump = Input.GetKey("space");
-
-        grab = Input.GetKey("e");  // since it's fixedUpdate it's fucked with getkeydown
-        drop = Input.GetKey("q");
-
+        inputMouseX = 0f;
+        inputMouseY = 0f;
+        inputMoveSide = 0f;
+        inputMoveForward = 0f;
+        inputJump = false;
+        inputGrab = false;
+        inputDrop = false;
         PerformPhysics();
     }
     void PerformPhysics()
@@ -120,12 +144,10 @@ public class Actor : MonoBehaviour
 
         if (originalRotation.y > viewRange && originalRotation.y < 180f)
         {
-            //Debug.Log(originalRotation.x);
             resultVector.y = viewRange;
         }
         else if (originalRotation.y < 360f - viewRange && originalRotation.y > 180f)
         {
-            //Debug.Log(originalRotation.x);
             resultVector.y = -viewRange;
         }
 

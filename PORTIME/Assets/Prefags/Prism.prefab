@@ -125,6 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TorsoSocket: {fileID: 0}
   ActorPrefab: {fileID: 0}
+  isItem: 1
   isActor: 0
   isShadow: 0
   isPlayer: 0
@@ -133,6 +134,8 @@ MonoBehaviour:
   shadowMoveSide: 0
   shadowMoveForward: 0
   shadowJump: 0
+  shadowGrab: 0
+  shadowDrop: 0
 --- !u!114 &4149879923793971553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,3 +148,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf869230bdfb4d40b7d7b38b97440d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  grabber: {fileID: 0}
