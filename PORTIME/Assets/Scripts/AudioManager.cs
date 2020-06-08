@@ -86,7 +86,7 @@ public class AudioManager : MonoBehaviour
             AdjustVolume("Portime3", 1f);
         }
 
-        if (Input.GetKeyDown("e"))
+        if (Input.GetKeyDown("r"))
         {
             cycle++;
             if (cycle > 3)

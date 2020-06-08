@@ -11,7 +11,7 @@ public class TimeBody : MonoBehaviour
     public bool isActor = false;
     public bool isShadow = false;
     public bool isPlayer = false;
-    bool ePressed = false;
+    bool rewindPressed = false;
     bool rPressed = false;
 
     int framesPlayed;
@@ -26,6 +26,8 @@ public class TimeBody : MonoBehaviour
     public float shadowMoveSide;
     public float shadowMoveForward;
     public bool shadowJump;
+    public bool shadowGrab;
+    public bool shadowDrop;
 
     Quaternion actorAllRotation;
     Vector3 lastVelocity = new Vector3(0f, 0f, 0f);
@@ -35,6 +37,7 @@ public class TimeBody : MonoBehaviour
     Rigidbody rb;
     Actor actor;
     Animator animator;
+    SelectionManager selectionManager;
 
 
     // Start is called before the first frame update
@@ -52,6 +55,7 @@ public class TimeBody : MonoBehaviour
         if (isActor)
         {
             actor = GetComponent<Actor>();
+            selectionManager = GetComponent<SelectionManager>();
             //Head = this.gameObject.transform.GetChild(0);
         }
         if (isShadow)
@@ -62,12 +66,10 @@ public class TimeBody : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("e"))
-        {
-            ePressed = true;
-        }
         if (Input.GetKeyDown("r"))
-            rPressed = true;
+        {
+            rewindPressed = true;
+        }
     }
 
     void FixedUpdate()
@@ -81,9 +83,9 @@ public class TimeBody : MonoBehaviour
         else if (pauseTimeFor > -1 && !isShadow)
             rb.isKinematic = false;
 
-        if (ePressed)
+        if (rewindPressed)
         {
-            ePressed = false;
+            rewindPressed = false;
             if (isPlayer)
             {
                 CreateShadow();
@@ -144,6 +146,8 @@ public class TimeBody : MonoBehaviour
         shadowMoveSide = actorFrame.moveSide;
         shadowMoveForward = actorFrame.moveForward;
         shadowJump = actorFrame.jump;
+        shadowGrab = actorFrame.grab;
+        shadowDrop = actorFrame.drop;
 
         actor.UpdateAsShadow();
     }
@@ -159,6 +163,9 @@ public class TimeBody : MonoBehaviour
         {
             ActorFrame actorFrame = actorHistory[index];
             TorsoSocket.transform.rotation = actorFrame.torsoRotation;
+            shadowGrab = actorFrame.grab;
+            shadowDrop = actorFrame.drop;
+            selectionManager.ItemSelection(shadowGrab, shadowDrop);
             animator.SetFloat("Velocity", basicFrame.velocity.sqrMagnitude);
         }
 
@@ -184,7 +191,7 @@ public class TimeBody : MonoBehaviour
                 actorHistory.RemoveAt(0);
             }
             //actorAllRotation = Head.transform.rotation;
-            actorHistory.Insert(actorHistory.Count, new ActorFrame(TorsoSocket.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump));
+            actorHistory.Insert(actorHistory.Count, new ActorFrame(TorsoSocket.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump, actor.grab, actor.drop));
 
         }
         

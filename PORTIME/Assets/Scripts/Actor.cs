@@ -22,6 +22,8 @@ public class Actor : MonoBehaviour
     public float moveSide = 0f;
     public float moveForward = 0f;
     public bool jump = false;
+    public bool grab = false;
+    public bool drop = false;
 
     public float viewRange = 60.0f;
 
@@ -54,6 +56,8 @@ public class Actor : MonoBehaviour
         moveSide = timeBody.shadowMoveSide/2;  // /2
         moveForward = timeBody.shadowMoveForward/2;  // /2
         jump = timeBody.shadowJump;
+        grab = timeBody.shadowGrab;
+        drop = timeBody.shadowDrop;
 
         PerformPhysics();
     }
@@ -66,6 +70,9 @@ public class Actor : MonoBehaviour
         moveForward = Input.GetAxisRaw("Vertical");
 
         jump = Input.GetKey("space");
+
+        grab = Input.GetKey("e");  // since it's fixedUpdate it's fucked with getkeydown
+        drop = Input.GetKey("q");
 
         PerformPhysics();
     }
@@ -85,7 +92,7 @@ public class Actor : MonoBehaviour
         if (clampVerticalRotation)
             TorsoSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
 
-        selectionManager.ItemSelection();
+        selectionManager.ItemSelection(grab, drop);
 
         animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
     }

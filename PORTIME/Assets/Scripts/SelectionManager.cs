@@ -5,14 +5,15 @@ public class SelectionManager : MonoBehaviour
     public string grabbableTag = "grabbable";
     public Material hoverMaterial;
     public Transform CameraSocket; // Used for raycast
+    public Transform largeItemSocket;  // Used in Item.cs
     public float grabRange = 100f;
 
     GameObject hoverItem;
     GameObject newHoverItem;
-    GameObject grabbedItem;
+    public GameObject grabbedItem = null;
     Item itemScript;
     Item newItemScript;
-    public void ItemSelection()
+    public void ItemSelection(bool grab, bool drop)
     {
         RaycastHit hit;
         Ray ray = new Ray(CameraSocket.position, CameraSocket.transform.forward);  // rai rai!
@@ -29,7 +30,17 @@ public class SelectionManager : MonoBehaviour
                     ClearHover("Looked at a new item");
                     SetHover("yeah");
                 }
-
+                if (grab)
+                {
+                    grabbedItem = hoverItem;
+                    itemScript.Interact(gameObject, "grab");
+                    Debug.Log("Grabbed!");
+                }
+                else if (drop)
+                {
+                    itemScript.Interact(gameObject, "drop");
+                    Debug.Log("Drobbed!");
+                }
                 // dank code that maybe runs
             }
             else ClearHover("isnt grabbable");  // When looking at an object, but it isn't grabbable
@@ -39,7 +50,7 @@ public class SelectionManager : MonoBehaviour
 
     void SetHover(string message)
     {
-        Debug.Log(message);
+        //Debug.Log(message);
         hoverItem = newHoverItem;
         itemScript = newItemScript;
         newItemScript.Interact(this.gameObject, "hover");
@@ -49,7 +60,7 @@ public class SelectionManager : MonoBehaviour
         //Debug.Log(message);
         if (hoverItem != null)
         {
-            Debug.Log(message);
+            //Debug.Log(message);
             itemScript.Interact(this.gameObject, "unhover");
             hoverItem = null;
             itemScript = null;

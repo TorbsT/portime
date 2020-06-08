@@ -225,6 +225,8 @@ MonoBehaviour:
   moveSide: 0
   moveForward: 0
   jump: 0
+  grab: 0
+  drop: 0
   viewRange: 45
 --- !u!114 &6143226818162771939
 MonoBehaviour:
@@ -249,6 +251,8 @@ MonoBehaviour:
   shadowMoveSide: 0
   shadowMoveForward: 0
   shadowJump: 0
+  shadowGrab: 0
+  shadowDrop: 0
 --- !u!95 &7712017758653656723
 Animator:
   serializedVersion: 3
@@ -280,10 +284,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3a85fd37fac96f438f2e2632b730e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grabbableTag: grabbable
   hoverMaterial: {fileID: 2100000, guid: afb7b234d021d6b4c8e140a14d7eae03, type: 2}
   CameraSocket: {fileID: 8573785631782193831}
+  largeItemSocket: {fileID: 6072880866243329144}
   grabRange: 100
-  grabbableTag: grabbable
+  grabbedItem: {fileID: 0}
 --- !u!1 &5406295803667976575
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +488,12 @@ Transform:
 --- !u!4 &8573785631782193831 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -719079905929089249, guid: 0228767631d33c441ade0c35c58afe29,
+    type: 3}
+  m_PrefabInstance: {fileID: 70197467781555640}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6072880866243329144 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6106406936514877888, guid: 0228767631d33c441ade0c35c58afe29,
     type: 3}
   m_PrefabInstance: {fileID: 70197467781555640}
   m_PrefabAsset: {fileID: 0}
