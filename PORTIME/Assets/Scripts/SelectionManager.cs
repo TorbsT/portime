@@ -31,7 +31,7 @@ public class SelectionManager : MonoBehaviour
                     ClearHover("Looked at a new item");
                     SetHover("yeah");
                 }
-                if (grab)
+                if (grab && grabbedItem == null)
                 {
                     grabbedItem = hoverItem;
                     grabbedItemScript = grabbedItem.GetComponent<Item>();
@@ -43,10 +43,15 @@ public class SelectionManager : MonoBehaviour
         else ClearHover("not looking at an object");  // When not looking at an object
         if (drop && grabbedItem != null)
         {
-            grabbedItemScript.Interact(gameObject, "drop");
+            ClearGrab();
         }
     }
-
+    public void ClearGrab()  // drops both for actor and item
+    {
+        if (grabbedItem == null) return;
+        grabbedItemScript.Interact(gameObject, "drop");
+        grabbedItem = null;
+    }
     void SetHover(string message)
     {
         hoverItem = newHoverItem;

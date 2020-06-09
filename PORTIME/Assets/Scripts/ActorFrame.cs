@@ -3,6 +3,7 @@
 public class ActorFrame
 {
     public Quaternion torsoRotation;
+    public Quaternion headRotation;
 
     // INPUT
     public float mouseX;
@@ -13,10 +14,11 @@ public class ActorFrame
     public bool grab;
     public bool drop;
 
-    public ActorFrame(Quaternion _torsoRotation, float _mouseX, float _mouseY, float _moveSide, float _moveForward, bool _jump, bool _grab, bool _drop)
+    public ActorFrame(Quaternion _torsoRotation, Quaternion _headRotation, float _mouseX, float _mouseY, float _moveSide, float _moveForward, bool _jump, bool _grab, bool _drop)
     {
         torsoRotation = _torsoRotation;
-        
+        headRotation = _headRotation;
+
         mouseX = _mouseX;
         mouseY = _mouseY;
         moveSide = _moveSide;

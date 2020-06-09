@@ -8,6 +8,7 @@ public class Actor : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundMask;
 
+    public bool rotateTorso = false;
     public bool clampVerticalRotation = true;
     public float groundDistance = 0.4f;
     public float mouseSensitivity = 2f;
@@ -112,9 +113,18 @@ public class Actor : MonoBehaviour
         BadMethod();
 
         transform.localRotation *= Quaternion.Euler(0f, mouseX, 0f);
-        TorsoSocket.localRotation *= Quaternion.Euler(0f, mouseY, 0f);
-        if (clampVerticalRotation)
-            TorsoSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
+        if (rotateTorso)
+        {
+            TorsoSocket.localRotation *= Quaternion.Euler(0f, mouseY, 0f);
+            if (clampVerticalRotation)
+                TorsoSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
+        } else
+        {
+            //HeadSocket.localRotation *= Quaternion.Euler(0f, mouseY, 0f);
+            HeadSocket.Rotate(0f, mouseY, 0f, Space.Self);
+            //if (clampVerticalRotation)
+            //    HeadSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
+        }
 
         selectionManager.ItemSelection(grab, drop);
 

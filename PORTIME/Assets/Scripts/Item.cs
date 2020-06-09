@@ -56,6 +56,7 @@ public class Item : MonoBehaviour
         {
             if (grabber != null) grabber.GetComponent<SelectionManager>().grabbedItem = null;
             grabber = interactor;
+            Debug.Log("Grabbed");
             
 
             //gameObject.GetComponent<Renderer>().material = interactor.GetComponent<SelectionManager>().hoverMaterial;
@@ -69,10 +70,10 @@ public class Item : MonoBehaviour
     }
     void Hold()
     {
-        rb.velocity = Vector3.zero;
+        rb.velocity = 10f*(largeItemSocket.position-transform.position);
         rb.angularVelocity = Vector3.zero;
-        transform.position = largeItemSocket.position;
-        transform.rotation = largeItemSocket.rotation;
+        //transform.position = largeItemSocket.position;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 0.5f);
     }
     void Equip()
     {

@@ -172,7 +172,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2923800990132679870}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0db5291addf52dd47a963aa686287a07, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -214,12 +214,13 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 256
+  rotateTorso: 0
   clampVerticalRotation: 1
   groundDistance: 0.4
   mouseSensitivity: 4
   mouseSensitivityRatio: 0.3
   movementSpeed: 2
-  jumpForce: 6
+  jumpForce: 8
   mouseX: 0
   mouseY: 0
   moveSide: 0
@@ -240,9 +241,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba4637269012632489877e99b6fdf657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HeadSocket: {fileID: 4751186885668741121}
   TorsoSocket: {fileID: 1388691393906312406}
   ActorPrefab: {fileID: 6171806825213553132, guid: 0ee13694c0a445e458977a04333e133d,
     type: 3}
+  isItem: 0
   isActor: 1
   isShadow: 0
   isPlayer: 1
@@ -394,6 +397,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: mistake
+      objectReference: {fileID: 0}
+    - target: {fileID: -7801084139684372114, guid: 0228767631d33c441ade0c35c58afe29,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4533155096144919111, guid: 0228767631d33c441ade0c35c58afe29,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 0228767631d33c441ade0c35c58afe29,
         type: 3}

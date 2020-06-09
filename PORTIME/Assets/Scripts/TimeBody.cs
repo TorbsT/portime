@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TimeBody : MonoBehaviour
 {
-
+    public Transform HeadSocket;
     public Transform TorsoSocket;
     public GameObject ActorPrefab;
 
@@ -88,13 +88,8 @@ public class TimeBody : MonoBehaviour
         {
             if (isActor)
             {
-                GetComponent<SelectionManager>().grabbedItem = null;
-            } else if (isItem)
-            {
-                GetComponent<Item>().Drop();
+                GetComponent<SelectionManager>().ClearGrab();
             }
-
-
             rewindPressed = false;
             if (isPlayer)
             {
@@ -169,6 +164,7 @@ public class TimeBody : MonoBehaviour
         {
             ActorFrame actorFrame = actorHistory[index];
             TorsoSocket.transform.rotation = actorFrame.torsoRotation;
+            HeadSocket.transform.rotation = actorFrame.headRotation;
             shadowGrab = actorFrame.grab;
             shadowDrop = actorFrame.drop;
             selectionManager.ItemSelection(shadowGrab, shadowDrop);
@@ -197,7 +193,7 @@ public class TimeBody : MonoBehaviour
                 actorHistory.RemoveAt(0);
             }
             //actorAllRotation = Head.transform.rotation;
-            actorHistory.Insert(actorHistory.Count, new ActorFrame(TorsoSocket.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump, actor.grab, actor.drop));
+            actorHistory.Insert(actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump, actor.grab, actor.drop));
 
         }
         
