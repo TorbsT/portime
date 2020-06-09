@@ -2,7 +2,7 @@
 
 public class SelectionManager : MonoBehaviour
 {
-    public string grabbableTag = "grabbable";
+    public string grabbableTag = "Grabbable";
     public Material hoverMaterial;
     public Transform CameraSocket; // Used for raycast
     public Transform largeItemSocket;  // Used in Item.cs

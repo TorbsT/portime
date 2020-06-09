@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 4149879923793971553}
   m_Layer: 8
   m_Name: Prism
-  m_TagString: grabbable
+  m_TagString: Grabbable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba4637269012632489877e99b6fdf657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HeadSocket: {fileID: 0}
   TorsoSocket: {fileID: 0}
   ActorPrefab: {fileID: 0}
   isItem: 1
