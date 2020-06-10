@@ -5,48 +5,60 @@ public class SelectionManager : MonoBehaviour
     public string interactableTag = "Interactable";
     public Material watchMaterial;
     public Transform CameraSocket; // Used for raycast
-    public Transform largeItemSocket;  // Used in Item.cs
+    public Transform blockSocket;  // Used in Item.cs
     public float grabRange = 100f;
 
     GameObject watched;
     GameObject newWatched;
-    public GameObject grabbedItem = null;
+    public GameObject grabbedBlock = null;  // ONLY MODIFY THROUGH OTHER SCRIPTS
+    public Interactable grabbedScript;  // ONLY MODIFY THROUGH OTHER SCRIPTS
     Interactable watchedScript;
     void Start()
     {
-        watched = null;
+        ClearWatched();
     }
     public void ObjectInteraction(bool grab, bool drop)
     {
+        if (drop)
+            Drop();
         RaycastHit hit;
         Ray ray = new Ray(CameraSocket.position, CameraSocket.transform.forward);  // rai rai!
         Debug.DrawRay(CameraSocket.position, CameraSocket.transform.forward, Color.red, 0.01f);
         if (Physics.Raycast(ray, out hit, grabRange))
         {
-            Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.CompareTag(interactableTag))
             {
                 newWatched = hit.collider.gameObject;
                 if (newWatched != watched)
                 {
-                    if (watched != null) watchedScript.Interact(gameObject, "unwatch");
+                    ClearWatched();
                     watched = newWatched;
                     watchedScript = watched.GetComponent<Interactable>();
                     watchedScript.Interact(gameObject, "watch");
                 }
                 if (grab)
                 {
-                    watchedScript = watched.GetComponent<Interactable>();
                     watchedScript.Interact(gameObject, "grab");
                 }
             }
-             //ClearHover("isnt grabbable");  // When looking at an object, but it isn't grabbable
+            else ClearWatched();  // When looking at an object, but it isn't grabbable
         }
-        else //ClearHover("not looking at an object");  // When not looking at an object
-        if (drop && grabbedItem != null)
+        else ClearWatched();  // When not looking at an object
+    }
+    public void Drop()
+    {
+        if (grabbedBlock != null)
+            grabbedScript.Interact(gameObject, "drop");
+    }
+    public void ClearWatched()
+    {
+        if (watched != null)
         {
-            //ClearGrab();
+            watchedScript.Interact(gameObject, "unwatch");
         }
+        watched = null;
+        watchedScript = null;
+
     }
     /*
     public void ClearGrab()  // drops both for actor and item

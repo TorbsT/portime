@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eddb06998912864181cc8038868cffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blockSocket: {fileID: 6072880866243329144}
   TorsoSocket: {fileID: 1388691393906312406}
   HeadSocket: {fileID: 4751186885668741121}
   CameraSocket: {fileID: 8573785631782193831}
@@ -243,7 +244,7 @@ MonoBehaviour:
   TorsoSocket: {fileID: 1388691393906312406}
   ActorPrefab: {fileID: 6171806825213553132, guid: 0ee13694c0a445e458977a04333e133d,
     type: 3}
-  isItem: 0
+  isBlock: 0
   isActor: 1
   isShadow: 0
   isPlayer: 1
@@ -288,9 +289,10 @@ MonoBehaviour:
   interactableTag: Interactable
   watchMaterial: {fileID: 2100000, guid: afb7b234d021d6b4c8e140a14d7eae03, type: 2}
   CameraSocket: {fileID: 8573785631782193831}
-  largeItemSocket: {fileID: 6072880866243329144}
-  grabRange: 100
-  grabbedItem: {fileID: 0}
+  blockSocket: {fileID: 0}
+  grabRange: 5
+  grabbedBlock: {fileID: 0}
+  grabbedScript: {fileID: 0}
 --- !u!1 &5406295803667976575
 GameObject:
   m_ObjectHideFlags: 0

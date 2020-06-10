@@ -13,6 +13,7 @@ public class ActorFrame
     public bool jump;
     public bool grab;
     public bool drop;
+    public bool run;
 
     public ActorFrame(Quaternion _torsoRotation, Quaternion _headRotation, float _mouseX, float _mouseY, float _moveSide, float _moveForward, bool _jump, bool _grab, bool _drop)
     {

@@ -6,43 +6,71 @@ public class Interactable : MonoBehaviour
 {
     public GameObject player;
     public GameObject grabber;
+    public string actorTag = "Actor";
 
     SelectionManager interactorScript;
     Material initialMaterial;
     Renderer renderer;
     bool isPlayer;
-    bool isItem;
+    bool isBlock;
     bool isButton;
+    bool isWatching;
 
+    Block blockScript;
+    Button buttonScript;
 
     void Awake()
     {
         initialMaterial = GetComponent<Renderer>().material;
         renderer = GetComponent<Renderer>();
         grabber = null;
+        isWatching = false;
     }
 
     void Start()
     {
-        player = GameObject.Find("Player");
-        if (gameObject.GetComponent<Item>() == null) isItem = false; else isItem = true;
-        if (gameObject.GetComponent<Button>() == null) isButton = false; else isButton = true;
+        player = GetPlayer();
+        blockScript = GetComponent<Block>();
+        buttonScript = GetComponent<Button>();
+        if (blockScript == null) isBlock = false; else isBlock = true;
+        if (buttonScript == null) isButton = false; else isButton = true;
     }
 
     public void Interact(GameObject interactor, string action)
     {
         interactorScript = interactor.GetComponent<SelectionManager>();
-        if (interactor == player) isPlayer = true;
-        if (action == "watch")
+        if (interactor == player) isPlayer = true; else isPlayer = false;
+        if (action == "watch" && isPlayer)
         {
-            Debug.Log("Watching");
-            if (isPlayer) renderer.material = interactorScript.watchMaterial;
+            isWatching = true;
+            if (!isBlock)
+                renderer.material = interactorScript.watchMaterial;
+            else if (blockScript.grabber != interactor)
+                renderer.material = interactorScript.watchMaterial;
         }
-        if (action == "unwatch")
+        if (action == "unwatch" && isPlayer)
         {
-            if (isPlayer) renderer.material = initialMaterial;
+            isWatching = false;
+            renderer.material = initialMaterial;
         }
-        //if (action == "grab")
+        if (action == "grab")
+        {
+            if (isBlock && blockScript.grabber != interactor) GetComponent<Block>().PickUp(interactor);
+            //if (isButton) GetComponent<Button>().Click();
+        }
+        if (action == "drop")
+        {
+            if (isBlock)
+            {
+                GetComponent<Block>().Drop(interactor);
+            }
+        }
+    }
+    GameObject GetPlayer()
+    {
+        GameObject[] actors = GameObject.FindGameObjectsWithTag(actorTag);
+        if (actors.Length != 1) return null;
+        return actors[0];
     }
     /*
     void FixedUpdate()

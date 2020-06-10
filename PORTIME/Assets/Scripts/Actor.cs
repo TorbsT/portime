@@ -2,6 +2,7 @@
 
 public class Actor : MonoBehaviour
 {
+    public Transform blockSocket;
     public Transform TorsoSocket;
     public Transform HeadSocket;
     public Transform CameraSocket;

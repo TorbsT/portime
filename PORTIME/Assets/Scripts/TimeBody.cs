@@ -8,7 +8,7 @@ public class TimeBody : MonoBehaviour
     public Transform TorsoSocket;
     public GameObject ActorPrefab;
 
-    public bool isItem = false;
+    public bool isBlock = false;
     public bool isActor = false;
     public bool isShadow = false;
     public bool isPlayer = false;
@@ -88,7 +88,7 @@ public class TimeBody : MonoBehaviour
         {
             if (isActor)
             {
-                //GetComponent<SelectionManager>().ClearGrab();
+                selectionManager.Drop();
             }
             rewindPressed = false;
             if (isPlayer)
