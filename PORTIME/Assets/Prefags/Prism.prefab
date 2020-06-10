@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 2691332439064516450}
   - component: {fileID: 2691332439064516451}
   - component: {fileID: 2851615722855038712}
-  - component: {fileID: 4149879923793971553}
+  - component: {fileID: 264781447887603932}
   m_Layer: 8
   m_Name: Prism
-  m_TagString: Grabbable
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,7 +137,7 @@ MonoBehaviour:
   shadowJump: 0
   shadowGrab: 0
   shadowDrop: 0
---- !u!114 &4149879923793971553
+--- !u!114 &264781447887603932
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2691332439064516380}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cf869230bdfb4d40b7d7b38b97440d1, type: 3}
+  m_Script: {fileID: 11500000, guid: ef42ef58820d7e243ae1453756256601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}

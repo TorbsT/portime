@@ -33,7 +33,6 @@ public class Turret : MonoBehaviour
         if (target != null)
         {
             LookAt(target.transform);
-            Debug.Log("looking at player");
         }
         //else if (lastSeen != null) LookAt(lastSeen);
     }
@@ -59,7 +58,6 @@ public class Turret : MonoBehaviour
                 if (VerifyVisibility(actor.transform))
                 {
                     newTarget = actor;
-                    Debug.Log("Yup, " + actor.name + " is visible");
                 }
             }
         }
@@ -72,10 +70,8 @@ public class Turret : MonoBehaviour
         Debug.DrawRay(turretHeadRotator.position, (victim.position - turretHeadRotator.position), Color.red, 0.01f);
         if (Physics.Raycast(ray, out hit, turretRange))
         {
-            Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.gameObject.name == actorHitboxName)
             {
-                Debug.Log("Correct tag");
                 return true;
             }
         }

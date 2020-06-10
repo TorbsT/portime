@@ -88,7 +88,7 @@ public class TimeBody : MonoBehaviour
         {
             if (isActor)
             {
-                GetComponent<SelectionManager>().ClearGrab();
+                //GetComponent<SelectionManager>().ClearGrab();
             }
             rewindPressed = false;
             if (isPlayer)
@@ -167,7 +167,7 @@ public class TimeBody : MonoBehaviour
             HeadSocket.transform.rotation = actorFrame.headRotation;
             shadowGrab = actorFrame.grab;
             shadowDrop = actorFrame.drop;
-            selectionManager.ItemSelection(shadowGrab, shadowDrop);
+            selectionManager.ObjectInteraction(shadowGrab, shadowDrop);
             animator.SetFloat("Velocity", basicFrame.velocity.sqrMagnitude);
         }
 

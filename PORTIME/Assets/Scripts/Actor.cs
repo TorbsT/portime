@@ -126,7 +126,7 @@ public class Actor : MonoBehaviour
             //    HeadSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
         }
 
-        selectionManager.ItemSelection(grab, drop);
+        selectionManager.ObjectInteraction(grab, drop);
 
         animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
     }

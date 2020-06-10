@@ -2,38 +2,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class Interactable : MonoBehaviour
 {
-    /*
     public GameObject player;
     public GameObject grabber;
 
+    SelectionManager interactorScript;
     Material initialMaterial;
-    bool wasHovered;  // so you don't need to change material every update
-    bool wasGrabbed;  // idk probably useful later
+    Renderer renderer;
+    bool isPlayer;
+    bool isItem;
+    bool isButton;
 
-    Rigidbody rb;
-
-    Transform leftHand;
-    Transform rightHand;
-    Transform largeItemSocket;
-
-    Collider itemCollider;
-    Collider actorCollider;
 
     void Awake()
     {
-        initialMaterial = gameObject.GetComponent<Renderer>().material;
+        initialMaterial = GetComponent<Renderer>().material;
+        renderer = GetComponent<Renderer>();
         grabber = null;
     }
 
-    private void Start()
+    void Start()
     {
-        rb = GetComponent<Rigidbody>();
         player = GameObject.Find("Player");
-        itemCollider = GetComponent<Collider>();
+        if (gameObject.GetComponent<Item>() == null) isItem = false; else isItem = true;
+        if (gameObject.GetComponent<Button>() == null) isButton = false; else isButton = true;
     }
 
+    public void Interact(GameObject interactor, string action)
+    {
+        interactorScript = interactor.GetComponent<SelectionManager>();
+        if (interactor == player) isPlayer = true;
+        if (action == "watch")
+        {
+            Debug.Log("Watching");
+            if (isPlayer) renderer.material = interactorScript.watchMaterial;
+        }
+        if (action == "unwatch")
+        {
+            if (isPlayer) renderer.material = initialMaterial;
+        }
+        //if (action == "grab")
+    }
+    /*
     void FixedUpdate()
     {
         if (grabber != null) Hold();
@@ -44,7 +55,7 @@ public class Item : MonoBehaviour
         if (action == "hover")  // big brain
         {
             if (interactor == player)
-                gameObject.GetComponent<Renderer>().material = interactor.GetComponent<SelectionManager>().watchMaterial;
+                gameObject.GetComponent<Renderer>().material = interactor.GetComponent<SelectionManager>().hoverMaterial;
         }
         if (action == "unhover")
         {
@@ -58,7 +69,7 @@ public class Item : MonoBehaviour
             if (grabber != null) grabber.GetComponent<SelectionManager>().grabbedItem = null;
             grabber = interactor;
             Debug.Log("Grabbed");
-            
+
 
             //gameObject.GetComponent<Renderer>().material = interactor.GetComponent<SelectionManager>().hoverMaterial;
         }
@@ -71,7 +82,7 @@ public class Item : MonoBehaviour
     }
     void Hold()
     {
-        rb.velocity = 10f*(largeItemSocket.position-transform.position);
+        rb.velocity = 10f * (largeItemSocket.position - transform.position);
         rb.angularVelocity = Vector3.zero;
         //transform.position = largeItemSocket.position;
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 0.5f);

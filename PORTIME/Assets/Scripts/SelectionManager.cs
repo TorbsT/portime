@@ -2,50 +2,53 @@
 
 public class SelectionManager : MonoBehaviour
 {
-    public string grabbableTag = "Grabbable";
-    public Material hoverMaterial;
+    public string interactableTag = "Interactable";
+    public Material watchMaterial;
     public Transform CameraSocket; // Used for raycast
     public Transform largeItemSocket;  // Used in Item.cs
     public float grabRange = 100f;
 
-    GameObject hoverItem;
-    GameObject newHoverItem;
+    GameObject watched;
+    GameObject newWatched;
     public GameObject grabbedItem = null;
-    Item grabbedItemScript;
-    Item hoverItemScript;
-    Item newHoverItemScript;
-    public void ItemSelection(bool grab, bool drop)
+    Interactable watchedScript;
+    void Start()
+    {
+        watched = null;
+    }
+    public void ObjectInteraction(bool grab, bool drop)
     {
         RaycastHit hit;
         Ray ray = new Ray(CameraSocket.position, CameraSocket.transform.forward);  // rai rai!
         Debug.DrawRay(CameraSocket.position, CameraSocket.transform.forward, Color.red, 0.01f);
         if (Physics.Raycast(ray, out hit, grabRange))
         {
-            if (hit.collider.CompareTag(grabbableTag))
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.collider.CompareTag(interactableTag))
             {
-                newHoverItem = hit.collider.gameObject;
-                newHoverItemScript = newHoverItem.GetComponent<Item>();
-
-                if (newHoverItem != hoverItem)
+                newWatched = hit.collider.gameObject;
+                if (newWatched != watched)
                 {
-                    ClearHover("Looked at a new item");
-                    SetHover("yeah");
+                    if (watched != null) watchedScript.Interact(gameObject, "unwatch");
+                    watched = newWatched;
+                    watchedScript = watched.GetComponent<Interactable>();
+                    watchedScript.Interact(gameObject, "watch");
                 }
-                if (grab && grabbedItem == null)
+                if (grab)
                 {
-                    grabbedItem = hoverItem;
-                    grabbedItemScript = grabbedItem.GetComponent<Item>();
-                    hoverItemScript.Interact(gameObject, "grab");
+                    watchedScript = watched.GetComponent<Interactable>();
+                    watchedScript.Interact(gameObject, "grab");
                 }
             }
-            else ClearHover("isnt grabbable");  // When looking at an object, but it isn't grabbable
+             //ClearHover("isnt grabbable");  // When looking at an object, but it isn't grabbable
         }
-        else ClearHover("not looking at an object");  // When not looking at an object
+        else //ClearHover("not looking at an object");  // When not looking at an object
         if (drop && grabbedItem != null)
         {
-            ClearGrab();
+            //ClearGrab();
         }
     }
+    /*
     public void ClearGrab()  // drops both for actor and item
     {
         if (grabbedItem == null) return;
@@ -54,17 +57,21 @@ public class SelectionManager : MonoBehaviour
     }
     void SetHover(string message)
     {
-        hoverItem = newHoverItem;
-        hoverItemScript = newHoverItemScript;
-        newHoverItemScript.Interact(this.gameObject, "hover");
+        watched = newHoverItem;
+        if (interactableIsItem)
+        {
+            hoverItemScript = watched.GetComponent<Item>();
+            hoverItemScript.Interact(gameObject, "hover");
+        }
     }
     void ClearHover(string message)
     {
-        if (hoverItem != null)
+        if (watched != null)
         {
             hoverItemScript.Interact(this.gameObject, "unhover");
-            hoverItem = null;
+            watched = null;
             hoverItemScript = null;
         }
     }
+    */
 }
