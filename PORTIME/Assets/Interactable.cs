@@ -56,7 +56,7 @@ public class Interactable : MonoBehaviour
         if (action == "grab")
         {
             if (isBlock && blockScript.grabber != interactor) GetComponent<Block>().PickUp(interactor);
-            //if (isButton) GetComponent<Button>().Click();
+            if (isButton) GetComponent<Button>().Click();
         }
         if (action == "drop")
         {
