@@ -67,6 +67,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8468189054726295646, guid: 096d13c06dc29684bad72e0695cf2c56,
+        type: 3}
+      propertyPath: isPlayer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6143226818162771939, guid: 096d13c06dc29684bad72e0695cf2c56,
         type: 3}
       propertyPath: ActorPrefab

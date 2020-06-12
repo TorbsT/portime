@@ -44,9 +44,9 @@ public class Block : MonoBehaviour
         if (grabber != null)
         {
             rb.velocity = Vector3.zero;
-            rb.AddForce(100f*(grabberScript.blockSocket.position - transform.position));
+            rb.AddForce(1000f*(grabberScript.blockRotator.position - transform.position));
             rb.angularVelocity = Vector3.zero;
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 0.5f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, grabberScript.blockRotator.rotation, 0.5f);
         }
     }
     public void Drop(GameObject interactor)
