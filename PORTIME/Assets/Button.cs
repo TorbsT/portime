@@ -35,13 +35,11 @@ public class Button : MonoBehaviour
             //buttonSocket.transform.localRotation = Quaternion.identity;
             if (buttonSocket.transform.localPosition.z < topPosition.localPosition.z)
             {
-                Debug.Log("sdad");
                 rb.AddRelativeForce(0f, 0f, 1f);
                 TriggerMechs();
             }
             else
             {
-                Debug.Log("ÆÆÆÆÆÆÆÆ");
                 //rb.velocity = Vector3.zero;
                 buttonSocket.transform.position = topPosition.position;
                 UnTriggerMechs();

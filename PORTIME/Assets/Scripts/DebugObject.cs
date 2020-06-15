@@ -4,19 +4,19 @@ using UnityEngine;
 public class DebugObject : MonoBehaviour
 {
     Rigidbody rb;
-
+    GameMaster gameMaster;
     //List<BasicFrame> basicHistory;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        //basicHistory = new List<BasicFrame>();
-        Debug.Log("Initial: " + transform.position + " " + rb.velocity + " " + rb.angularVelocity);
+        gameMaster = GameObject.Find("GameMaster").GetComponent<GameMaster>();
     }
 
 
     void FixedUpdate()
     {
-        Debug.Log("Pos:" + transform.position + " - V: " + rb.velocity + " - aV: " + rb.angularVelocity);
+        if (gameMaster.framesPlayed >= 1 && gameMaster.framesPlayed <= 3)
+            Debug.Log("Obj: " + name + ", frames played: " + gameMaster.framesPlayed + ", Pos:" + transform.position);
     }
 }
