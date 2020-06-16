@@ -13,6 +13,7 @@ public class GameMaster : MonoBehaviour
     public int seq;
     public int globalFrame;  // STATIC, PIVOTED UPON
     public int globalStart;  //
+    public int globalSkip;
     public List<Sequence> sequences;
     public int currentTimeCreatedUpon;
     public int currentSequenceStart;
@@ -22,6 +23,7 @@ public class GameMaster : MonoBehaviour
     private void Awake()
     {
         globalFrame = 0;
+        globalSkip = 0;
         currentSequenceStart = 0;
         seq = 0;
         pauseTimeFor = travelPause;
@@ -49,7 +51,7 @@ public class GameMaster : MonoBehaviour
         {
             sequenceStart = sequence.start;
             sequenceLength = sequence.length;
-            sequenceSkip = sequence.skip;
+            sequenceSkip = sequence.thisSequenceSkip;
         } else
         {
             Debug.LogWarning("uh oh STINKYYY");
@@ -59,10 +61,14 @@ public class GameMaster : MonoBehaviour
         }
         int newSequenceStart = (Mathf.Max(sequenceStart, sequenceStart + sequenceLength));
         int newSequenceLength = Mathf.Min(sequenceFrameLimit, globalFrame - globalStart);  // 
-        int newSequenceSkip = Mathf.Max(0, globalFrame - globalStart - sequenceFrameLimit) + sequenceSkip;  // Waits n frames before starting anim, n= deleted frames. Adding each seq = good?
+        //globalSkip = newSequenceSkip;
+        globalStart += Mathf.Max(0, globalFrame - globalStart - sequenceFrameLimit);
+        int newSequenceSkip = globalStart;  // Waits n frames before starting anim, n= deleted frames. Adding each seq = good?
 
         Debug.LogWarning(globalStart + " " + globalFrame + " " + globalStart + " " + sequenceFrameLimit);
-        globalStart = Mathf.Max(globalStart, globalFrame - globalStart - sequenceFrameLimit);
+
+        
+        // hvis globalframe-globalstart > sequenceframelimit, globalstart = globalframe-sequenceframelimit
         sequences.Insert(sequences.Count, new Sequence(newSequenceStart, newSequenceLength, newSequenceSkip));
 
         Debug.Log("Start was " + newSequenceStart + ", length was " + newSequenceLength + ", wait was " + newSequenceSkip);

@@ -93,13 +93,15 @@ public class TimeBody : MonoBehaviour
     void Replay()
     {
         sequence = gameMaster.sequences[mySeq];
-        int currentRelativeFrame = gameMaster.globalFrame-gameMaster.globalStart + gameMaster.currentTimeCreatedUpon - sequence.skip;  // When at 0, play. when at sequence.length, stop
+        int currentRelativeFrame = gameMaster.globalFrame-gameMaster.sequences[mySeq].thisSequenceSkip;  // When at 0, play. when at sequence.length, stop
         if (currentRelativeFrame >= 0 && currentRelativeFrame < sequence.length) //)  
         {
+            if (mySeq == 1) Debug.Log("currentRelativeFrame: " + currentRelativeFrame + ", " + gameMaster.globalFrame + " " + gameMaster.globalStart + " " + gameMaster.globalSkip);
             //Debug.Log("currentRelativeFrame: " + currentRelativeFrame + ", framesStart: " + framesStart + ", framesStop: " + framesStop);
-            ReplayFrame(currentRelativeFrame + sequence.start + sequence.skip);
+            ReplayFrame(currentRelativeFrame + sequence.start);
         } else
         {
+            if (mySeq == 1) Debug.LogWarning("currentRelativeFrame: " + currentRelativeFrame + ", " + sequence.length + " " + gameMaster.globalFrame + " " + gameMaster.globalStart + " " + gameMaster.globalSkip);
             // STORE AWAY FOR LATER USE
             transform.position = new Vector3(0f, -100f, 0f);
         }
@@ -138,13 +140,13 @@ public class TimeBody : MonoBehaviour
         if (isActor)
         {
             // actors record input & extra rotation as well.
-            if (gameMaster.currentSequenceFrame > gameMaster.sequenceFrameLimit)
+            if (gameMaster.globalFrame-gameMaster.globalStart > gameMaster.sequenceFrameLimit)
             {
                 //TimeUp();
                 //Debug.LogError("bruh");
                 basicHistory.RemoveAt(gameMaster.currentSequenceStart);
                 actorHistory.RemoveAt(gameMaster.currentSequenceStart);
-                //Debug.Log("Removed at " + gameMaster.currentSequenceStart);
+                Debug.Log("Removed at " + gameMaster.currentSequenceStart);
             }
             //actorAllRotation = Head.transform.rotation;
             basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
