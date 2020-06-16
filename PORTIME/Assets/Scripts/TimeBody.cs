@@ -16,10 +16,8 @@ public class TimeBody : MonoBehaviour
     public bool isPlayer = false;
     public bool isGhost = false;
 
-    public int deletedFrames = 0;
-    int framesStart = 0;
-    int framesStop;
-    int framesRecorded = 0;
+    public int mySeq;
+    Sequence sequence;
 
     List<BasicFrame> basicHistory;
     List<ActorFrame> actorHistory;
@@ -46,8 +44,12 @@ public class TimeBody : MonoBehaviour
         //else
         //    framesPlayed = 0;
         rb = GetComponent<Rigidbody>();
-
-        
+        /*
+        if (isShadow)
+        {
+            sequence = gameMaster.sequences[mySeq];
+        }
+        */
         if (isActor)
         {
             actor = GetComponent<Actor>();
@@ -62,27 +64,6 @@ public class TimeBody : MonoBehaviour
             //CreateGhost();
         }
 
-    }
-    public void Return()
-    {
-        if (isActor)
-        {
-            selectionManager.Drop();
-        }
-        if (isPlayer)
-        {
-            Debug.Log("bruh");
-            ReplayFrame(framesStart);
-            CreateShadow();
-        }
-        //else if (isShadow)
-        //{
-        //   framesPlayed = 0;
-        //}
-        else if (!isShadow)  // Objects remove their history and resets to initial
-        {
-            Restart();
-        }
     }
 
     void FixedUpdate()
@@ -111,25 +92,12 @@ public class TimeBody : MonoBehaviour
     }
     void Replay()
     {
-        int currentRelativeFrame = gameMaster.framesPlayed - deletedFrames;
-        /*
-        while (currentRelativeFrame > (framesStop - framesStart))
-            if (framesStop - framesStart > 0)
-                currentRelativeFrame -= (framesStop - framesStart);
-            else
-            {
-                Debug.Log("ÆÆÆÆÆ" + currentRelativeFrame + ", start: " + framesStart + ", stop: " + framesStop);
-                currentRelativeFrame -= 1;
-            }
-        */
-        if (currentRelativeFrame < 0) return;
-        if (currentRelativeFrame == 0)
-            ReplayFrame(framesStart);
-        else if (isShadow && currentRelativeFrame + framesStart < framesStop) //)  
+        sequence = gameMaster.sequences[mySeq];
+        int currentRelativeFrame = gameMaster.globalFrame-gameMaster.globalStart + gameMaster.currentTimeCreatedUpon - sequence.skip;  // When at 0, play. when at sequence.length, stop
+        if (currentRelativeFrame >= 0 && currentRelativeFrame < sequence.length) //)  
         {
             //Debug.Log("currentRelativeFrame: " + currentRelativeFrame + ", framesStart: " + framesStart + ", framesStop: " + framesStop);
-            ReplayFrame(currentRelativeFrame + framesStart);
-            //ReplayFrameUsingInput(framesPlayed+framesStart);
+            ReplayFrame(currentRelativeFrame + sequence.start + sequence.skip);
         } else
         {
             // STORE AWAY FOR LATER USE
@@ -170,15 +138,13 @@ public class TimeBody : MonoBehaviour
         if (isActor)
         {
             // actors record input & extra rotation as well.
-            if (gameMaster.framesPlayed-framesStart > Mathf.Round(gameMaster.sequenceLimit / Time.fixedDeltaTime))
+            if (gameMaster.currentSequenceFrame > gameMaster.sequenceFrameLimit)
             {
                 //TimeUp();
                 //Debug.LogError("bruh");
-                basicHistory.RemoveAt(framesStart);
-                actorHistory.RemoveAt(framesStart);
-                Debug.Log("Removed at " + framesStart);
-                deletedFrames++;
-                framesRecorded--;
+                basicHistory.RemoveAt(gameMaster.currentSequenceStart);
+                actorHistory.RemoveAt(gameMaster.currentSequenceStart);
+                //Debug.Log("Removed at " + gameMaster.currentSequenceStart);
             }
             //actorAllRotation = Head.transform.rotation;
             basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
@@ -187,18 +153,14 @@ public class TimeBody : MonoBehaviour
         }
         else
         {
-            if (basicHistory.Count > 3*Mathf.Round(gameMaster.sequenceLimit / Time.fixedDeltaTime))
+            if (gameMaster.globalFrame > 3*gameMaster.sequenceFrameLimit)
             {
                 //TimeUp();
                 //Debug.LogError("bruh");
-                basicHistory.RemoveAt(framesStart);
-                deletedFrames++;
-                framesRecorded--;
+                basicHistory.RemoveAt(0);
             }
             basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
         }
-
-        framesRecorded++;
     }
     void TimeUp()
     {
@@ -212,19 +174,11 @@ public class TimeBody : MonoBehaviour
         ShadowProperties.isShadow = true;
         ShadowProperties.isPlayer = false;
         
-        Debug.Log("Set framesStart to " + framesStart);
-        ShadowProperties.framesStart = framesStart;//basicHistory.Count-framesRecorded;
-        framesStart = actorHistory.Count;
-        //Debug.LogWarning("count: " + basicHistory.Count + ", recorded: " + framesRecorded);
-        ShadowProperties.framesStop = basicHistory.Count;
-        //ShadowProperties.pauseTimeFor = 0f;
+        ShadowProperties.mySeq = gameMaster.seq;
         ShadowProperties.basicHistory = basicHistory;
         ShadowProperties.actorHistory = actorHistory;
-        ShadowProperties.deletedFrames = deletedFrames;
-
-        framesRecorded = 0;
-        deletedFrames = 0;
     }
+    /*
     void CreateGhost()
     {
         GameObject ghost = Instantiate(ghostPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
@@ -239,6 +193,28 @@ public class TimeBody : MonoBehaviour
         ghostTB.framesStop = 1000000000;
         ghostTB.framesStart = framesStart-1;
         ghostTB.deletedFrames = (int)Mathf.Round(gameMaster.sequenceLimit * Time.fixedDeltaTime);
+    }
+    */
+    public void Return()
+    {
+        if (isActor)
+        {
+            selectionManager.Drop();
+        }
+        if (isPlayer)
+        {
+            Debug.Log("bruh");
+            ReplayFrame(gameMaster.currentSequenceStart);  // when time is paused, set position and shit to the first frame
+            CreateShadow();
+        }
+        //else if (isShadow)
+        //{
+        //   framesPlayed = 0;
+        //}
+        else if (!isShadow)  // Objects remove their history and resets to initial
+        {
+            Restart();
+        }
     }
 
 

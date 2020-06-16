@@ -16,7 +16,9 @@ public class DebugObject : MonoBehaviour
 
     void FixedUpdate()
     {
+        /*
         if (gameMaster.framesPlayed >= 1 && gameMaster.framesPlayed <= 3)
             Debug.Log("Obj: " + name + ", frames played: " + gameMaster.framesPlayed + ", Pos:" + transform.position);
+        */
     }
 }

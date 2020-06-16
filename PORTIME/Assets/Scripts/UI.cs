@@ -18,7 +18,9 @@ public class UI : MonoBehaviour
     }
     void Update()
     {
+        /*
         timeLeftInt = Mathf.CeilToInt(gameMaster.timeLeft);
         timeLeft.text = timeLeftInt.ToString();
+        */
     }
 }
