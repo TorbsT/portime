@@ -27,13 +27,16 @@ public class Block : MonoBehaviour
         if (interactor == null) return;
         if (interactor.GetComponent<SelectionManager>().grabbedBlock != null) // if handles nullpointreference at first grab
         {
-            interactor.GetComponent<SelectionManager>().grabbedScript.GetComponent<Block>().grabber.GetComponent<SelectionManager>().ClearWatched();
+            interactor.GetComponent<SelectionManager>().grabbedScript.GetComponent<Block>().grabber.GetComponent<SelectionManager>().ClearWatched();  // what the actual fuck
             interactor.GetComponent<SelectionManager>().grabbedScript.GetComponent<Block>().Drop(null);  
         }
         rb.useGravity = false;
 
         grabber = interactor;
         grabberScript = grabber.GetComponent<Actor>();
+        interactableScript.grabberId = grabberScript.id;
+        Debug.Log(grabber);
+        Debug.Log(grabberScript.id);
         selectionManager = grabber.GetComponent<SelectionManager>();
         selectionManager.grabbedBlock = gameObject;
         selectionManager.grabbedScript = interactableScript;

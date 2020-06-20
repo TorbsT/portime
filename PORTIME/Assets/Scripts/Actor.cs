@@ -18,7 +18,8 @@ public class Actor : MonoBehaviour
     public float movementSpeed = 1f;
     public float jumpForce = 20f;
 
-    
+    public int id = 0;
+
     public float mouseX = 0;
     public float mouseY = 0f;
     public int moveSide = 0;
@@ -50,7 +51,7 @@ public class Actor : MonoBehaviour
     SelectionManager selectionManager;
     GameMaster gameMaster;
     bool isGrounded;
-    void Start()
+    void Awake()
     {
         animator = GetComponent<Animator>();
         timeBody = GetComponent<TimeBody>();

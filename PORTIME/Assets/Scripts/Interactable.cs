@@ -6,6 +6,7 @@ public class Interactable : MonoBehaviour
 {
     public GameObject player;
     public GameObject grabber;
+    public int grabberId;
     public string actorTag = "Actor";
 
     SelectionManager interactorScript;
@@ -55,6 +56,7 @@ public class Interactable : MonoBehaviour
         }
         if (action == "grab")
         {
+            Debug.Log("BRUUUUH");
             if (isBlock && blockScript.grabber != interactor) GetComponent<Block>().PickUp(interactor);
             if (isButton) GetComponent<Button>().Click();
         }
@@ -71,6 +73,20 @@ public class Interactable : MonoBehaviour
         GameObject[] actors = GameObject.FindGameObjectsWithTag(actorTag);
         if (actors.Length != 1) return null;
         return actors[0];
+    }
+    public void HandleGrabFrame(GameObject interactor)
+    {
+        if (interactor != grabber)
+        {
+            if (interactor == null)
+            {
+                Interact(null, "drop");
+            } else
+            {
+                Debug.Log("its here chief");
+                Interact(interactor, "grab");
+            }
+        }
     }
     /*
     void FixedUpdate()

@@ -6,6 +6,8 @@ public class ActorFrame
     public Quaternion headRotation;
     public Quaternion blockRotation;
 
+    
+
     // INPUT
 
     
@@ -21,6 +23,7 @@ public class ActorFrame
 
     public ActorFrame(Quaternion _torsoRotation, Quaternion _headRotation, Quaternion _blockRotation, float _mouseX, float _mouseY, int _moveSide, int _moveForward, bool _jump, bool _grab, bool _drop, bool _rotate, bool _shift)
     {
+
         torsoRotation = _torsoRotation;
         headRotation = _headRotation;
         blockRotation = _blockRotation;

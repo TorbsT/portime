@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameMaster : MonoBehaviour
 {
+    public GameObject player;
+    
     TimeBody playerTB;
 
     public float pauseTimeFor;
@@ -27,7 +29,7 @@ public class GameMaster : MonoBehaviour
         currentSequenceStart = 0;
         seq = 0;
         pauseTimeFor = travelPause;
-        playerTB = GameObject.Find("Player").GetComponent<TimeBody>();
+        playerTB = player.GetComponent<TimeBody>();
         sequences = new List<Sequence>();
     }
     private void FixedUpdate()
@@ -70,11 +72,12 @@ public class GameMaster : MonoBehaviour
         
         // hvis globalframe-globalstart > sequenceframelimit, globalstart = globalframe-sequenceframelimit
         sequences.Insert(sequences.Count, new Sequence(newSequenceStart, newSequenceLength, newSequenceSkip));
-
+        playerTB.CreateShadow();  // BEFORE timeBody.Return()!!!!
         Debug.Log("Start was " + newSequenceStart + ", length was " + newSequenceLength + ", wait was " + newSequenceSkip);
         TimeBody[] timeBodyArray = FindObjectsOfType(typeof(TimeBody)) as TimeBody[];
         foreach (TimeBody timeBody in timeBodyArray)
         {
+            Debug.Log(timeBody.gameObject.name);
             timeBody.Return();
         }
 

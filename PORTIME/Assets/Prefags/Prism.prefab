@@ -126,18 +126,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeadSocket: {fileID: 0}
   TorsoSocket: {fileID: 0}
-  ActorPrefab: {fileID: 0}
-  isBlock: 0
+  blockRotator: {fileID: 0}
+  shadowPrefab: {fileID: 0}
+  ghostPrefab: {fileID: 0}
+  isBlock: 1
   isActor: 0
   isShadow: 0
   isPlayer: 0
-  shadowMouseX: 0
-  shadowMouseY: 0
-  shadowMoveSide: 0
-  shadowMoveForward: 0
-  shadowJump: 0
-  shadowGrab: 0
-  shadowDrop: 0
+  isGhost: 0
+  mySeq: 0
 --- !u!114 &264781447887603932
 MonoBehaviour:
   m_ObjectHideFlags: 0
