@@ -27,6 +27,7 @@ public class TimeBody : MonoBehaviour
     Animator animator;
     SelectionManager selectionManager;
     Interactable interactable;
+    Block blockScript;
     GameMaster gameMaster;
 
     // Start is called before the first frame update
@@ -62,6 +63,7 @@ public class TimeBody : MonoBehaviour
         if (isBlock)
         {
             interactable = GetComponent<Interactable>();
+            blockScript = GetComponent<Block>();
             blockHistory = new List<BlockFrame>();
         }
 
@@ -95,23 +97,30 @@ public class TimeBody : MonoBehaviour
     {
         sequence = gameMaster.sequences[mySeq];
         int currentRelativeFrame = gameMaster.globalFrame-gameMaster.sequences[mySeq].thisSequenceSkip;  // When at 0, play. when at sequence.length, stop
-        if (currentRelativeFrame >= 0 && currentRelativeFrame < sequence.length) //)  
+        if (currentRelativeFrame >= 0 && currentRelativeFrame < sequence.length-1) //)  
         {
             //Debug.Log("currentRelativeFrame: " + currentRelativeFrame + ", framesStart: " + framesStart + ", framesStop: " + framesStop);
             ReplayFrame(currentRelativeFrame + sequence.start);
         } else
         {
             // STORE AWAY FOR LATER USE
-            transform.position = new Vector3(0f, -100f, 0f);
+            //ReplayFrame(sequence.length + sequence.start);
+            //transform.position = new Vector3(0f, -100f, 0f);
         }
         //framesPlayed++;
     }
     void Restart()
     {
         int shit = Mathf.Max(gameMaster.globalStart, gameMaster.globalFrame - gameMaster.sequenceFrameLimit);
-        ReplayFrame(shit);
-        basicHistory.RemoveRange(1, basicHistory.Count-1);  // First frame is necessary for future restarts
+        blockScript.Drop(null);
+        Debug.Log(shit + " " + basicHistory.Count);
+        basicHistory.RemoveRange(0, shit);  // First frame is necessary for future restarts
+        basicHistory.RemoveRange(1, basicHistory.Count - 1);
+        blockHistory.RemoveRange(0, shit);
         blockHistory.RemoveRange(1, blockHistory.Count - 1);
+        Debug.Log("HHHHHH");
+        ReplayFrame(0);
+
     }
     void ReplayFrame(int index, bool useInput = true)
     {
@@ -125,15 +134,20 @@ public class TimeBody : MonoBehaviour
         //if (!useInput) Debug.LogError("Yeah " + name);
         if (isBlock)
         {
+            Debug.Log("ÆÆÆÆÆÆÆÆÆÆÆ");
             BlockFrame blockFrame = blockHistory[index];
             GameObject legacyGrabber = null;
 
             Actor[] actorArray = FindObjectsOfType(typeof(Actor)) as Actor[];
             foreach (Actor actorthing in actorArray)
             {
+                Debug.Log("looking for " + blockFrame.grabberId + ", this one is " + actorthing.id);
                 if (actorthing.id == blockFrame.grabberId)
                     legacyGrabber = actorthing.gameObject;
             }
+
+            Debug.LogWarning("id: " + blockFrame.grabberId);
+            if (legacyGrabber != null ) Debug.LogWarning(", which is " + legacyGrabber.name);
             interactable.HandleGrabFrame(legacyGrabber);
         }
         if (isActor)
@@ -142,8 +156,7 @@ public class TimeBody : MonoBehaviour
             TorsoSocket.transform.rotation = actorFrame.torsoRotation;
             HeadSocket.transform.rotation = actorFrame.headRotation;
             blockRotator.transform.rotation = actorFrame.blockRotation;
-            if (useInput)
-                selectionManager.ObjectInteraction(actorFrame.grab, actorFrame.drop);
+            selectionManager.ObjectInteraction(actorFrame.grab, actorFrame.drop);
             actor.UpdateShadow(actorFrame);
             
         }
@@ -174,12 +187,13 @@ public class TimeBody : MonoBehaviour
             {
                 //TimeUp();
                 //Debug.LogError("bruh");
-                basicHistory.RemoveAt(gameMaster.globalStart);
-                blockHistory.RemoveAt(gameMaster.globalStart);
+                basicHistory.RemoveAt(0);
+                blockHistory.RemoveAt(0);
             }
+
             basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
             int grabberId = -1;
-            if (interactable.grabber != null) grabberId = interactable.grabberId;
+            grabberId = interactable.grabberId;
             blockHistory.Insert(blockHistory.Count, new BlockFrame(grabberId));
         }
     }
@@ -202,6 +216,8 @@ public class TimeBody : MonoBehaviour
 
         ShadowProperties.basicHistory = basicHistory;
         ShadowProperties.actorHistory = actorHistory;
+
+        actor.id++;
     }
     /*
     void CreateGhost()
@@ -229,8 +245,6 @@ public class TimeBody : MonoBehaviour
         }
         if (isPlayer)
         {
-            Debug.Log("bruh");
-            actor.id++;
             ReplayFrame(gameMaster.currentSequenceStart, true);  // when time is paused, set position and shit to the first frame
         }
         else if (isShadow)

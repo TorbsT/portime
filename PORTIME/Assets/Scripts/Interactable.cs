@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
+    public GameMaster gameMaster;
     public GameObject player;
     public GameObject grabber;
     public int grabberId;
-    public string actorTag = "Actor";
 
     SelectionManager interactorScript;
     Material initialMaterial;
@@ -23,14 +23,16 @@ public class Interactable : MonoBehaviour
     void Awake()
     {
         initialMaterial = GetComponent<Renderer>().material;
+        gameMaster = GameObject.Find("GameMaster").GetComponent<GameMaster>();
         renderer = GetComponent<Renderer>();
         grabber = null;
         isWatching = false;
+        grabberId = -1;
     }
 
     void Start()
     {
-        player = GetPlayer();
+        player = gameMaster.player;
         blockScript = GetComponent<Block>();
         buttonScript = GetComponent<Button>();
         if (blockScript == null) isBlock = false; else isBlock = true;
@@ -58,6 +60,8 @@ public class Interactable : MonoBehaviour
         {
             Debug.Log("BRUUUUH");
             if (isBlock && blockScript.grabber != interactor) GetComponent<Block>().PickUp(interactor);
+            //Debug.LogError("HEYYYY" + grabber);
+            //Debug.LogError("HEYYYY" + grabberId);
             if (isButton) GetComponent<Button>().Click();
         }
         if (action == "drop")
@@ -68,24 +72,25 @@ public class Interactable : MonoBehaviour
             }
         }
     }
-    GameObject GetPlayer()
-    {
-        GameObject[] actors = GameObject.FindGameObjectsWithTag(actorTag);
-        if (actors.Length != 1) return null;
-        return actors[0];
-    }
     public void HandleGrabFrame(GameObject interactor)
     {
+        Debug.Log("WOWOWOWOW");
         if (interactor != grabber)
         {
+            Debug.Log("JAJAJAJA");
             if (interactor == null)
             {
+                Debug.Log("KRKRKRRK");
                 Interact(null, "drop");
             } else
             {
-                Debug.Log("its here chief");
+                Debug.Log(interactor + " auto-grabbed apparently");
                 Interact(interactor, "grab");
             }
+        }
+        else
+        {
+            Debug.Log("it's " +interactor);
         }
     }
     /*

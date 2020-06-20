@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;  // For try and catch
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,16 +28,24 @@ public class Block : MonoBehaviour
         if (interactor == null) return;
         if (interactor.GetComponent<SelectionManager>().grabbedBlock != null) // if handles nullpointreference at first grab
         {
-            interactor.GetComponent<SelectionManager>().grabbedScript.GetComponent<Block>().grabber.GetComponent<SelectionManager>().ClearWatched();  // what the actual fuck
-            interactor.GetComponent<SelectionManager>().grabbedScript.GetComponent<Block>().Drop(null);  
+            try
+            {
+                interactor.GetComponent<SelectionManager>().grabbedScript.GetComponent<Block>().grabber.GetComponent<SelectionManager>().ClearWatched();  // what the actual fuck
+                interactor.GetComponent<SelectionManager>().grabbedScript.GetComponent<Block>().Drop(null);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("{0} Exception caught." + e);
+            }
         }
         rb.useGravity = false;
 
         grabber = interactor;
         grabberScript = grabber.GetComponent<Actor>();
         interactableScript.grabberId = grabberScript.id;
-        Debug.Log(grabber);
-        Debug.Log(grabberScript.id);
+        Debug.Log("bruhhhhhddsf " + grabber);
+        Debug.Log("ja " + grabberScript.id);
+        Debug.Log(interactableScript.grabberId);
         selectionManager = grabber.GetComponent<SelectionManager>();
         selectionManager.grabbedBlock = gameObject;
         selectionManager.grabbedScript = interactableScript;
@@ -62,6 +71,7 @@ public class Block : MonoBehaviour
             selectionManager.grabbedScript = null;
             grabber = null;
             grabberScript = null;
+            interactableScript.grabberId = -1;
             selectionManager = null;
         }
     }

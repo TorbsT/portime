@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class GameMaster : MonoBehaviour
 {
-    public GameObject player;
-    
+    [System.NonSerialized] public GameObject player;
+    public string actorTag = "Actor";
+
     TimeBody playerTB;
 
     public float pauseTimeFor;
@@ -24,6 +25,7 @@ public class GameMaster : MonoBehaviour
 
     private void Awake()
     {
+        player = GetPlayer();
         globalFrame = 0;
         globalSkip = 0;
         currentSequenceStart = 0;
@@ -77,13 +79,27 @@ public class GameMaster : MonoBehaviour
         TimeBody[] timeBodyArray = FindObjectsOfType(typeof(TimeBody)) as TimeBody[];
         foreach (TimeBody timeBody in timeBodyArray)
         {
-            Debug.Log(timeBody.gameObject.name);
+            //Debug.Log(timeBody.gameObject.name);
             timeBody.Return();
         }
+        
 
         globalFrame = globalStart;
         currentTimeCreatedUpon = newSequenceSkip;
         currentSequenceStart = newSequenceStart + newSequenceLength;
         seq++;
+    }
+    public GameObject GetPlayer()
+    {
+        GameObject[] actors = GameObject.FindGameObjectsWithTag(actorTag);
+        if (actors.Length != 1)
+        {
+            Debug.LogError("Couldnt find player");
+            Debug.LogError(actors.Length);
+            Debug.Log(actors[0]);
+            Debug.Log(actors[1]);
+            return null;
+        }
+        return actors[0];
     }
 }

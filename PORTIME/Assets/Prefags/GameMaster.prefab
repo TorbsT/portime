@@ -43,4 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 230d204c23083ea4083bf4fc1f5976c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLeft: 0
+  actorTag: Actor
+  pauseTimeFor: 0
+  seq: 0
+  globalFrame: 0
+  globalStart: 0
+  globalSkip: 0
+  currentTimeCreatedUpon: 0
+  currentSequenceStart: 0
+  currentSequenceFrame: 0
+  sequenceFrameLimit: 3000
