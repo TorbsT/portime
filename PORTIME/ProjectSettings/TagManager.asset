@@ -16,8 +16,8 @@ TagManager:
   - 
   - 
   - Static
+  - PhysObj
   - IgnoreActorCollision
-  - 
   - 
   - 
   - 

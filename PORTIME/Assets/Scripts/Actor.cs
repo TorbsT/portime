@@ -8,6 +8,7 @@ public class Actor : MonoBehaviour
     public Transform CameraSocket;
     public Transform groundCheck;
     public LayerMask groundMask;
+    //[SerializeField] LayerMask physObjMask;
 
     public bool rotateTorso = false;
     public bool clampVerticalRotation = true;
@@ -17,6 +18,7 @@ public class Actor : MonoBehaviour
     public float mouseSensitivityRatio = 0.3f;
     public float movementSpeed = 1f;
     public float jumpForce = 20f;
+
 
     public int id = 0;
 
@@ -40,7 +42,9 @@ public class Actor : MonoBehaviour
     bool inputDrop;
     bool inputRotate;
     bool inputShift;
-    
+
+    bool isOnPhysObj = false;
+    GameObject physObj;
 
     public float viewRange = 60.0f;
 
@@ -118,6 +122,7 @@ public class Actor : MonoBehaviour
         grab = actorFrame.grab;
         drop = actorFrame.drop;
         shift = actorFrame.shift;
+        PerformPhysics();
         selectionManager.ObjectInteraction(grab, drop);
         Animate();
     }
@@ -126,7 +131,28 @@ public class Actor : MonoBehaviour
         mouseX *= mouseSensitivity;
         mouseY *= mouseSensitivity * mouseSensitivityRatio;
 
+        isOnPhysObj = false;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (!isGrounded)
+        {
+            Collider[] footColliders = Physics.OverlapSphere(groundCheck.position, groundDistance);
+            foreach (Collider footCollider in footColliders)
+            {
+                if (footCollider.gameObject.layer != 9) continue;
+                if (footCollider.gameObject.GetComponent<Rigidbody>() == null)
+                {
+                    Debug.LogError("WHAAAAAATTTTTT");
+                    continue;
+                }
+                Debug.Log("BRRUUUUH");
+                isGrounded = true;
+                if (footCollider.gameObject != selectionManager.grabbedBlock) continue;
+                isGrounded = true;
+                isOnPhysObj = true;
+                physObj = footCollider.gameObject;
+            }
+
+        }
         BadMethod();
 
         transform.localRotation *= Quaternion.Euler(0f, mouseX, 0f);
@@ -170,8 +196,14 @@ public class Actor : MonoBehaviour
         Vector3 relVel = transform.InverseTransformDirection(rb.velocity);
         relVel.x = moveSide * movementSpeed;
         relVel.z = moveForward * movementSpeed;
+        if (isGrounded && isOnPhysObj)
+        {
+            physObj.GetComponent<Block>().JumpedOn();
+        }
         if (jump && isGrounded)
+        {
             relVel.y = jumpForce;
+        }
         rb.velocity = transform.TransformDirection(relVel);
     }
     Vector3 ClampVerticalRotation(Vector3 originalRotation)
@@ -188,5 +220,10 @@ public class Actor : MonoBehaviour
         }
 
         return resultVector;
+    }
+    public Transform GetCameraSocket()
+    {
+        Transform cameraSocket = CameraSocket;
+        return cameraSocket;
     }
 }

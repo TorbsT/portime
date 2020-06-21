@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2851615722855038712}
   - component: {fileID: 264781447887603932}
   - component: {fileID: 8552697677118151578}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Prism
   m_TagString: Interactable
   m_Icon: {fileID: 0}
@@ -105,8 +105,8 @@ Rigidbody:
   m_GameObject: {fileID: 2691332439064516380}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0
+  m_Drag: 0.05
+  m_AngularDrag: 0.5
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -147,9 +147,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef42ef58820d7e243ae1453756256601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMaster: {fileID: 0}
   player: {fileID: 0}
   grabber: {fileID: 0}
-  actorTag: Actor
+  grabberId: 0
 --- !u!114 &8552697677118151578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,4 +163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf869230bdfb4d40b7d7b38b97440d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  swingForce: 250
+  distanceKeeperForce: 0
+  holdCooldown: 0.75
+  currentHoldCooldown: 0
+  rotateSpeed: 0.1
+  weight: 1
   grabber: {fileID: 0}

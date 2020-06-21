@@ -25,6 +25,7 @@ public class GameMaster : MonoBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         player = GetPlayer();
         globalFrame = 0;
         globalSkip = 0;

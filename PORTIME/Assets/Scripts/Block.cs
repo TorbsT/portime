@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
+    [SerializeField] float swingForce = 1000f;
+    [SerializeField] float distanceKeeperForce = 0f;
+    [SerializeField] float holdCooldown = 0.5f;
+    [SerializeField] float currentHoldCooldown = 0f;
+    [SerializeField] float rotateSpeed = 0.5f;
+    public float weight = 1f;
     public GameObject grabber;
     Actor grabberScript;
     SelectionManager selectionManager;
@@ -22,10 +28,18 @@ public class Block : MonoBehaviour
     {
         Hold();
     }
-
+    public void JumpedOn()
+    {
+        currentHoldCooldown = holdCooldown;
+    }
     public void PickUp(GameObject interactor)
     {
         if (interactor == null) return;
+        if (grabber != null)
+        {
+            grabber.GetComponent<SelectionManager>().grabbedBlock = null;
+            grabber.GetComponent<SelectionManager>().grabbedScript = null;
+        }
         if (interactor.GetComponent<SelectionManager>().grabbedBlock != null) // if handles nullpointreference at first grab
         {
             try
@@ -38,7 +52,7 @@ public class Block : MonoBehaviour
                 Debug.LogError("{0} Exception caught." + e);
             }
         }
-        rb.useGravity = false;
+        //rb.useGravity = false;
 
         grabber = interactor;
         grabberScript = grabber.GetComponent<Actor>();
@@ -53,13 +67,26 @@ public class Block : MonoBehaviour
     }
     void Hold()
     {
-        if (grabber != null)
+        currentHoldCooldown -= Time.fixedDeltaTime;
+        if (grabber != null && currentHoldCooldown < 0f)
         {
+            //rb.useGravity = false;
+            //grabber.GetComponent<Rigidbody>().AddForce(0f, -100f * weight, 0f);
             rb.velocity = Vector3.zero;
-            rb.AddForce(1000f*(grabberScript.blockRotator.position - transform.position));
-            rb.angularVelocity = Vector3.zero;
-            transform.rotation = Quaternion.Lerp(transform.rotation, grabberScript.blockRotator.rotation, 0.5f);
+            Vector3 travelVector = (grabberScript.blockRotator.position - transform.position);
+            Vector3 playerToBlock = (grabberScript.transform.position - transform.position);
+            Vector3 playerToSocket = (grabberScript.blockRotator.position - grabberScript.transform.position);
+
+
+            rb.AddForce(swingForce * travelVector);
+            rb.AddForce(distanceKeeperForce * (Vector3.SqrMagnitude(playerToBlock) - Vector3.SqrMagnitude(playerToSocket)) * playerToBlock);
+            //rb.angularVelocity = (grabberScript.blockRotator.rotation.eulerAngles-transform.rotation.eulerAngles);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, grabberScript.blockRotator.rotation, rotateSpeed);
+            //rb.AddTorque(grabberScript.blockRotator.rotation.x-transform.rotation.x, 0f, 0f);
+            //rb.angularVelocity = Vector3.zero;
+            //transform.rotation = Quaternion.identity;
         }
+        //else rb.useGravity = true;
     }
     public void Drop(GameObject interactor)
     {

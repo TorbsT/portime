@@ -24,7 +24,7 @@ public class SelectionManager : MonoBehaviour
         RaycastHit hit;
         Ray ray = new Ray(CameraSocket.position, CameraSocket.transform.forward);  // rai rai!
         Debug.DrawRay(CameraSocket.position, CameraSocket.transform.forward, Color.red, 0.01f);
-        if (Physics.Raycast(ray, out hit, grabRange, (1 << 8)))
+        if (Physics.Raycast(ray, out hit, grabRange, (1 << 9)))
         {
             if (hit.collider.CompareTag(interactableTag))
             {
