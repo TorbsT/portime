@@ -71,13 +71,16 @@ public class TimeBody : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (gameMaster.pauseTimeFor > 0 && rb != null)
+        if (gameMaster.isRewinding)
         {
-            rb.isKinematic = true;
+            //if (rb != null) rb.isKinematic = true;
+
+            if(isActor)
+                Replay();
+            else
+                ReplayFrame(gameMaster.globalFrame-gameMaster.globalStart-1);
             return;
         }
-        else if (gameMaster.pauseTimeFor > -1 && !isShadow)
-            rb.isKinematic = false;
 
         if (isPlayer)
         {
@@ -95,6 +98,7 @@ public class TimeBody : MonoBehaviour
     }
     void Replay()
     {
+        Debug.Log(mySeq + " " + gameMaster.sequences.Count);
         sequence = gameMaster.sequences[mySeq];
         int currentRelativeFrame = gameMaster.globalFrame-gameMaster.sequences[mySeq].thisSequenceSkip;  // When at 0, play. when at sequence.length, stop
         if (currentRelativeFrame >= 0 && currentRelativeFrame < sequence.length-1) //)  
@@ -125,6 +129,7 @@ public class TimeBody : MonoBehaviour
     void ReplayFrame(int index, bool useInput = true)
     {
         //Debug.Log(index + ", " + basicHistory.Count);
+        Debug.Log("Length is " + basicHistory.Count + ", accessing "+index);
         if (index < 0 ^ index >= basicHistory.Count) Debug.LogWarning("error, " + index + ", " + basicHistory.Count);
         BasicFrame basicFrame = basicHistory[index];
         transform.position = basicFrame.position;
@@ -158,7 +163,6 @@ public class TimeBody : MonoBehaviour
             blockRotator.transform.rotation = actorFrame.blockRotation;
             selectionManager.ObjectInteraction(actorFrame.grab, actorFrame.drop);
             actor.UpdateShadow(actorFrame);
-            
         }
 
     }

@@ -9,8 +9,8 @@ public class GameMaster : MonoBehaviour
 
     TimeBody playerTB;
 
-    public float pauseTimeFor;
-    readonly float travelPause = 1f;
+    public bool isRewinding;
+    //readonly float travelPause = 10f;
 
 
     public int seq;
@@ -23,6 +23,13 @@ public class GameMaster : MonoBehaviour
     public int currentSequenceFrame;
     public int sequenceFrameLimit = 50*5;
 
+    int sequenceStart;
+    int sequenceLength;
+    int sequenceSkip;
+    int newSequenceStart;
+    int newSequenceLength;
+    int newSequenceSkip;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -31,14 +38,19 @@ public class GameMaster : MonoBehaviour
         globalSkip = 0;
         currentSequenceStart = 0;
         seq = 0;
-        pauseTimeFor = travelPause;
+        isRewinding = false;
         playerTB = player.GetComponent<TimeBody>();
         sequences = new List<Sequence>();
     }
     private void FixedUpdate()
     {
-        pauseTimeFor -= Time.fixedDeltaTime;
-        if (pauseTimeFor <= 0)
+        if (isRewinding)
+        {
+            globalFrame--;
+            currentSequenceFrame = globalFrame - currentSequenceStart;
+            if (globalFrame <= globalStart) BackAgain();
+        }
+        if (!isRewinding)
         {
             globalFrame++;
             currentSequenceFrame = globalFrame - currentSequenceStart;
@@ -46,35 +58,38 @@ public class GameMaster : MonoBehaviour
     }
     public void TravelBack()
     {
+        isRewinding = true;
         Sequence sequence = null;
         if (seq >= 1)
-            sequence = sequences[seq-1];
-        int sequenceStart;
-        int sequenceLength;
-        int sequenceSkip;
+            sequence = sequences[seq - 1];
         if (sequence != null)
         {
             sequenceStart = sequence.start;
             sequenceLength = sequence.length;
             sequenceSkip = sequence.thisSequenceSkip;
-        } else
+        }
+        else
         {
             Debug.LogWarning("uh oh STINKYYY");
             sequenceStart = 0;
             sequenceLength = 0;
             sequenceSkip = 0;
         }
-        int newSequenceStart = (Mathf.Max(sequenceStart, sequenceStart + sequenceLength));
-        int newSequenceLength = Mathf.Min(sequenceFrameLimit, globalFrame - globalStart);  // 
+        newSequenceStart = (Mathf.Max(sequenceStart, sequenceStart + sequenceLength));
+        newSequenceLength = Mathf.Min(sequenceFrameLimit, globalFrame - globalStart);  // 
         //globalSkip = newSequenceSkip;
         globalStart += Mathf.Max(0, globalFrame - globalStart - sequenceFrameLimit);
-        int newSequenceSkip = globalStart;  // Waits n frames before starting anim, n= deleted frames. Adding each seq = good?
+        newSequenceSkip = globalStart;  // Waits n frames before starting anim, n= deleted frames. Adding each seq = good?
 
         Debug.LogWarning(globalStart + " " + globalFrame + " " + globalStart + " " + sequenceFrameLimit);
 
-        
+
         // hvis globalframe-globalstart > sequenceframelimit, globalstart = globalframe-sequenceframelimit
         sequences.Insert(sequences.Count, new Sequence(newSequenceStart, newSequenceLength, newSequenceSkip));
+    }
+    void BackAgain()
+    {
+        isRewinding = false;
         playerTB.CreateShadow();  // BEFORE timeBody.Return()!!!!
         Debug.Log("Start was " + newSequenceStart + ", length was " + newSequenceLength + ", wait was " + newSequenceSkip);
         TimeBody[] timeBodyArray = FindObjectsOfType(typeof(TimeBody)) as TimeBody[];
