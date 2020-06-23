@@ -58,7 +58,6 @@ public class Interactable : MonoBehaviour
         }
         if (action == "grab")
         {
-            Debug.Log("BRUUUUH");
             if (isBlock && blockScript.grabber != interactor) GetComponent<Block>().PickUp(interactor);
             //Debug.LogError("HEYYYY" + grabber);
             //Debug.LogError("HEYYYY" + grabberId);
@@ -74,23 +73,15 @@ public class Interactable : MonoBehaviour
     }
     public void HandleGrabFrame(GameObject interactor)
     {
-        Debug.Log("WOWOWOWOW");
         if (interactor != grabber)
         {
-            Debug.Log("JAJAJAJA");
             if (interactor == null)
             {
-                Debug.Log("KRKRKRRK");
                 Interact(null, "drop");
             } else
             {
-                Debug.Log(interactor + " auto-grabbed apparently");
                 Interact(interactor, "grab");
             }
-        }
-        else
-        {
-            Debug.Log("it's " +interactor);
         }
     }
     /*

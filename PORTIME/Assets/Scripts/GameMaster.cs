@@ -21,7 +21,7 @@ public class GameMaster : MonoBehaviour
     public int currentTimeCreatedUpon;
     public int currentSequenceStart;
     public int currentSequenceFrame;
-    public int sequenceFrameLimit = 50*5;
+    public int sequenceFrameLimit = 3*50;
 
     int sequenceStart;
     int sequenceLength;
@@ -48,7 +48,7 @@ public class GameMaster : MonoBehaviour
         {
             globalFrame--;
             currentSequenceFrame = globalFrame - currentSequenceStart;
-            globalFrame = globalStart;
+            //globalFrame = globalStart;
             if (globalFrame <= globalStart) BackAgain();
         }
         if (!isRewinding)
@@ -60,6 +60,7 @@ public class GameMaster : MonoBehaviour
     public void TravelBack()
     {
         isRewinding = true;
+        playerTB.mySeq = seq;
         Sequence sequence = null;
         if (seq >= 1)
             sequence = sequences[seq - 1];

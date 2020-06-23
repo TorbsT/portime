@@ -71,7 +71,7 @@ public class TimeBody : MonoBehaviour
 
     void FixedUpdate()
     {
-        /*
+        
         if (gameMaster.isRewinding)
         {
             //if (rb != null) rb.isKinematic = true;
@@ -82,7 +82,7 @@ public class TimeBody : MonoBehaviour
                 ReplayFrame(gameMaster.globalFrame-gameMaster.globalStart-1);
             return;
         }
-        */
+        
 
         if (isPlayer)
         {
@@ -100,10 +100,10 @@ public class TimeBody : MonoBehaviour
     }
     void Replay()
     {
-        Debug.Log(mySeq + " " + gameMaster.sequences.Count);
         sequence = gameMaster.sequences[mySeq];
-        int currentRelativeFrame = gameMaster.globalFrame-gameMaster.sequences[mySeq].thisSequenceSkip;  // When at 0, play. when at sequence.length, stop
-        if (currentRelativeFrame >= 0 && currentRelativeFrame < sequence.length-1) //)  
+        int currentRelativeFrame = gameMaster.globalFrame-gameMaster.sequences[mySeq].thisSequenceSkip-mySeq-1;  // When at 0, play. when at sequence.length, stop
+        if (isPlayer) Debug.Log(currentRelativeFrame + " " + sequence.length + "Sequence " + mySeq + ", total " + gameMaster.sequences.Count + " sequences");
+        if (currentRelativeFrame >= 0 && currentRelativeFrame <= sequence.length-1) //)  
         {
             //Debug.Log("currentRelativeFrame: " + currentRelativeFrame + ", framesStart: " + framesStart + ", framesStop: " + framesStop);
             ReplayFrame(currentRelativeFrame + sequence.start);
@@ -131,8 +131,9 @@ public class TimeBody : MonoBehaviour
     void ReplayFrame(int index, bool useInput = true)
     {
         //Debug.Log(index + ", " + basicHistory.Count);
-        Debug.Log("Length is " + basicHistory.Count + ", accessing "+index);
+        //if (isPlayer) index -= mySeq;
         if (index < 0 ^ index >= basicHistory.Count) Debug.LogWarning("error, " + index + ", " + basicHistory.Count);
+        if (isPlayer) Debug.Log("playing, " + index + ", " + basicHistory.Count);
         BasicFrame basicFrame = basicHistory[index];
         transform.position = basicFrame.position;
         transform.rotation = basicFrame.rotation;
@@ -141,20 +142,20 @@ public class TimeBody : MonoBehaviour
         //if (!useInput) Debug.LogError("Yeah " + name);
         if (isBlock)
         {
-            Debug.Log("ÆÆÆÆÆÆÆÆÆÆÆ");
+            //Debug.Log("ÆÆÆÆÆÆÆÆÆÆÆ");
             BlockFrame blockFrame = blockHistory[index];
             GameObject legacyGrabber = null;
 
             Actor[] actorArray = FindObjectsOfType(typeof(Actor)) as Actor[];
             foreach (Actor actorthing in actorArray)
             {
-                Debug.Log("looking for " + blockFrame.grabberId + ", this one is " + actorthing.id);
+                //Debug.Log("looking for " + blockFrame.grabberId + ", this one is " + actorthing.id);
                 if (actorthing.id == blockFrame.grabberId)
                     legacyGrabber = actorthing.gameObject;
             }
 
-            Debug.LogWarning("id: " + blockFrame.grabberId);
-            if (legacyGrabber != null ) Debug.LogWarning(", which is " + legacyGrabber.name);
+            //Debug.LogWarning("id: " + blockFrame.grabberId);
+            //if (legacyGrabber != null ) Debug.LogWarning(", which is " + legacyGrabber.name);
             interactable.HandleGrabFrame(legacyGrabber);
         }
         if (isActor)
@@ -251,7 +252,7 @@ public class TimeBody : MonoBehaviour
         }
         if (isPlayer)
         {
-            ReplayFrame(gameMaster.currentSequenceStart, true);  // when time is paused, set position and shit to the first frame
+            ReplayFrame(gameMaster.currentSequenceStart+1, true);  // +1 because why not, gotem
         }
         else if (isShadow)
         {

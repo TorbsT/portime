@@ -35,7 +35,7 @@ public class Button : MonoBehaviour
             //buttonSocket.transform.localRotation = Quaternion.identity;
             if (buttonSocket.transform.localPosition.z < topPosition.localPosition.z)
             {
-                rb.AddRelativeForce(0f, 0f, 1f);
+                rb.AddForce(0f, 1f, 0f);
                 TriggerMechs();
             }
             else

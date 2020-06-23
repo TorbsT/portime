@@ -15,6 +15,7 @@ public class Block : MonoBehaviour
     Actor grabberScript;
     SelectionManager selectionManager;
     Interactable interactableScript;
+    GameMaster gameMaster;
 
     Rigidbody rb;
 
@@ -22,6 +23,7 @@ public class Block : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         interactableScript = GetComponent<Interactable>();
+        gameMaster = GameObject.Find("GameMaster").GetComponent<GameMaster>();
         Drop(null);
     }
     void FixedUpdate()
@@ -57,9 +59,6 @@ public class Block : MonoBehaviour
         grabber = interactor;
         grabberScript = grabber.GetComponent<Actor>();
         interactableScript.grabberId = grabberScript.id;
-        Debug.Log("bruhhhhhddsf " + grabber);
-        Debug.Log("ja " + grabberScript.id);
-        Debug.Log(interactableScript.grabberId);
         selectionManager = grabber.GetComponent<SelectionManager>();
         selectionManager.grabbedBlock = gameObject;
         selectionManager.grabbedScript = interactableScript;
@@ -67,6 +66,7 @@ public class Block : MonoBehaviour
     }
     void Hold()
     {
+        if (gameMaster.isRewinding) return;
         currentHoldCooldown -= Time.fixedDeltaTime;
         if (grabber != null && currentHoldCooldown < 0f)
         {
@@ -84,7 +84,7 @@ public class Block : MonoBehaviour
             //transform.rotation = Quaternion.Lerp(transform.rotation, grabberScript.blockRotator.rotation, rotateSpeed);
             //rb.AddTorque(grabberScript.blockRotator.rotation.x-transform.rotation.x, 0f, 0f);
             //rb.angularVelocity = Vector3.zero;
-            //transform.rotation = Quaternion.identity;
+            transform.rotation = grabberScript.blockRotator.rotation;
         }
         //else rb.useGravity = true;
     }
