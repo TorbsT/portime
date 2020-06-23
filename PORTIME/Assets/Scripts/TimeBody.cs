@@ -71,6 +71,7 @@ public class TimeBody : MonoBehaviour
 
     void FixedUpdate()
     {
+        /*
         if (gameMaster.isRewinding)
         {
             //if (rb != null) rb.isKinematic = true;
@@ -81,6 +82,7 @@ public class TimeBody : MonoBehaviour
                 ReplayFrame(gameMaster.globalFrame-gameMaster.globalStart-1);
             return;
         }
+        */
 
         if (isPlayer)
         {

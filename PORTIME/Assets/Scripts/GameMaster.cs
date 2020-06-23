@@ -48,6 +48,7 @@ public class GameMaster : MonoBehaviour
         {
             globalFrame--;
             currentSequenceFrame = globalFrame - currentSequenceStart;
+            globalFrame = globalStart;
             if (globalFrame <= globalStart) BackAgain();
         }
         if (!isRewinding)
