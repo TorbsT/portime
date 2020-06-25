@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actorTag: Actor
-  pauseTimeFor: 0
+  isRewinding: 0
   seq: 0
   globalFrame: 0
   globalStart: 0
@@ -53,3 +53,4 @@ MonoBehaviour:
   currentSequenceStart: 0
   currentSequenceFrame: 0
   sequenceFrameLimit: 3000
+  rewindDuration: 3

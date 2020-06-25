@@ -10,102 +10,98 @@ public class GameMaster : MonoBehaviour
     TimeBody playerTB;
 
     public bool isRewinding;
-    //readonly float travelPause = 10f;
-
 
     public int seq;
     public int globalFrame;  // STATIC, PIVOTED UPON
     public int globalStart;  //
-    public int globalSkip;
-    public List<Sequence> sequences;
-    public int currentTimeCreatedUpon;
-    public int currentSequenceStart;
-    public int currentSequenceFrame;
+    public List<ActorSequence> sequences;
+
     public int sequenceFrameLimit = 3*50;
 
-    int sequenceStart;
-    int sequenceLength;
-    int sequenceSkip;
-    int newSequenceStart;
-    int newSequenceLength;
-    int newSequenceSkip;
+    [SerializeField] float rewindDuration = 3f;
+
+    float rewindTime = 0f;
+    [SerializeField] int globalRewindTo;
+    int globalRewindStart;
 
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
         player = GetPlayer();
         globalFrame = 0;
-        globalSkip = 0;
-        currentSequenceStart = 0;
         seq = 0;
         isRewinding = false;
         playerTB = player.GetComponent<TimeBody>();
-        sequences = new List<Sequence>();
+        sequences = new List<ActorSequence>();
+        sequences.Insert(sequences.Count, new ActorSequence(globalStart, new List<BasicFrame>(), new List<ActorFrame>()));
     }
     private void FixedUpdate()
     {
         if (isRewinding)
         {
-            globalFrame--;
-            currentSequenceFrame = globalFrame - currentSequenceStart;
+            //globalFrame--;
+            rewindTime += Time.fixedDeltaTime;
+            SetCurrentRewindFrame();
             //globalFrame = globalStart;
-            if (globalFrame <= globalStart) BackAgain();
+            if (globalFrame <= globalRewindTo) BackAgain();
         }
         if (!isRewinding)
         {
             globalFrame++;
-            currentSequenceFrame = globalFrame - currentSequenceStart;
         }
     }
     public void TravelBack()
     {
         isRewinding = true;
-        playerTB.mySeq = seq;
-        Sequence sequence = null;
-        if (seq >= 1)
-            sequence = sequences[seq - 1];
-        if (sequence != null)
-        {
-            sequenceStart = sequence.start;
-            sequenceLength = sequence.length;
-            sequenceSkip = sequence.thisSequenceSkip;
-        }
-        else
-        {
-            Debug.LogWarning("uh oh STINKYYY");
-            sequenceStart = 0;
-            sequenceLength = 0;
-            sequenceSkip = 0;
-        }
-        newSequenceStart = (Mathf.Max(sequenceStart, sequenceStart + sequenceLength));
-        newSequenceLength = Mathf.Min(sequenceFrameLimit, globalFrame - globalStart);  // 
+        rewindTime = 0;
+        globalRewindStart = globalFrame;
+        globalRewindTo = GetNewGlobalStart();
+        globalStart = globalRewindTo;
+
+
+        //newSequenceStart = (Mathf.Max(sequenceStart, sequenceStart + sequenceLength));
+        //newSequenceLength = Mathf.Min(sequenceFrameLimit, globalFrame - globalStart);  // 
         //globalSkip = newSequenceSkip;
-        globalStart += Mathf.Max(0, globalFrame - globalStart - sequenceFrameLimit);
-        newSequenceSkip = globalStart;  // Waits n frames before starting anim, n= deleted frames. Adding each seq = good?
+
 
         Debug.LogWarning(globalStart + " " + globalFrame + " " + globalStart + " " + sequenceFrameLimit);
 
 
         // hvis globalframe-globalstart > sequenceframelimit, globalstart = globalframe-sequenceframelimit
-        sequences.Insert(sequences.Count, new Sequence(newSequenceStart, newSequenceLength, newSequenceSkip));
+        //sequences.Insert(sequences.Count, new Sequence(newSequenceStart, newSequenceLength, newSequenceSkip));
     }
+
     void BackAgain()
     {
         isRewinding = false;
-        playerTB.CreateShadow();  // BEFORE timeBody.Return()!!!!
-        Debug.Log("Start was " + newSequenceStart + ", length was " + newSequenceLength + ", wait was " + newSequenceSkip);
-        TimeBody[] timeBodyArray = FindObjectsOfType(typeof(TimeBody)) as TimeBody[];
-        foreach (TimeBody timeBody in timeBodyArray)
-        {
-            //Debug.Log(timeBody.gameObject.name);
-            timeBody.Return();
-        }
-        
-
-        globalFrame = globalStart;
-        currentTimeCreatedUpon = newSequenceSkip;
-        currentSequenceStart = newSequenceStart + newSequenceLength;
+        playerTB.CreateShadow();
+        sequences.Insert(sequences.Count, new ActorSequence(globalStart, new List<BasicFrame>(), new List<ActorFrame>()));
         seq++;
+        //
+        playerTB.mySeq = seq;
+        globalFrame = globalStart;
+    }
+    public int GetNewGlobalStart()
+    {
+        return (int)Mathf.Max(globalStart, globalFrame - sequenceFrameLimit);
+    }
+    void SetCurrentRewindFrame()
+    {
+        globalFrame = globalRewindStart - GetCurrentRewindFrame();
+    }
+    int GetCurrentRewindFrame()
+    {
+        int frame;
+        frame = (int)(Mathf.Round((RewindFunction(rewindTime)/RewindFunction(rewindDuration)*(globalRewindStart-globalRewindTo))));
+        Debug.Log(frame);
+        //if (frame <= 0) Debug.LogWarning("test: " + globalRewindStart + " - " + RewindFunction(rewindTime) + " / " + RewindFunction(rewindDuration) + " * " + (globalRewindStart - GetNewGlobalStart()));
+        return frame;
+    }
+    float RewindFunction(float x)
+    {
+        float y;
+        y = Mathf.Pow(x, 1f);
+        return y;
     }
     public GameObject GetPlayer()
     {

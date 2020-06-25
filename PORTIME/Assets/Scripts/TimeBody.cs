@@ -17,8 +17,9 @@ public class TimeBody : MonoBehaviour
     public bool isGhost = false;
 
     public int mySeq;
-    Sequence sequence;
+    ActorSequence sequence;
 
+    List<ActorSequence> actorSequences;
     List<BasicFrame> basicHistory;
     List<BlockFrame> blockHistory;
     List<ActorFrame> actorHistory;
@@ -36,6 +37,7 @@ public class TimeBody : MonoBehaviour
         gameMaster = GameObject.Find("GameMaster").GetComponent<GameMaster>();
         if (isPlayer)
         {
+            actorSequences = new List<ActorSequence>();
             actorHistory = new List<ActorFrame>();
         }
         if (!isShadow)  // Creates empty history for new objects (not shadows, they already have one)
@@ -77,9 +79,9 @@ public class TimeBody : MonoBehaviour
             //if (rb != null) rb.isKinematic = true;
 
             if(isActor)
-                Replay();
+                ReplayActor();
             else
-                ReplayFrame(gameMaster.globalFrame-gameMaster.globalStart-1);
+                ReplayFrame(gameMaster.globalFrame-gameMaster.GetNewGlobalStart()-1) ;
             return;
         }
         
@@ -91,25 +93,28 @@ public class TimeBody : MonoBehaviour
         }
         else if (isShadow)
         {
-            Replay();
+            ReplayActor();
         }
         else
             Record();
 
         
     }
-    void Replay()
+    void ReplayActor()
     {
         sequence = gameMaster.sequences[mySeq];
-        int currentRelativeFrame = gameMaster.globalFrame-gameMaster.sequences[mySeq].thisSequenceSkip-mySeq-1;  // When at 0, play. when at sequence.length, stop
-        if (isPlayer) Debug.Log(currentRelativeFrame + " " + sequence.length + "Sequence " + mySeq + ", total " + gameMaster.sequences.Count + " sequences");
-        if (currentRelativeFrame >= 0 && currentRelativeFrame <= sequence.length-1) //)  
+        //if (isShadow) Debug.Log("historylength: " + sequence.basicHistory.Count + " total sequences: " + gameMaster.sequences.Count + ", this: " + mySeq);
+        int currentRelativeFrame = gameMaster.globalFrame-sequence.start;  // When at 0, play. when at sequence.length, stop
+        //Debug.Log(currentRelativeFrame + " " + sequence.start + " " + sequence.length + " " + gameMaster.sequences[gameMaster.sequences.Count - 1].thisSequenceSkip);
+        //if (isPlayer) Debug.Log(currentRelativeFrame + " " + sequence.length + "Sequence " + mySeq + ", total " + gameMaster.sequences.Count + " sequences");
+        if (currentRelativeFrame >= 0 && currentRelativeFrame <= sequence.basicHistory.Count-1) //)  
         {
             //Debug.Log("currentRelativeFrame: " + currentRelativeFrame + ", framesStart: " + framesStart + ", framesStop: " + framesStop);
-            ReplayFrame(currentRelativeFrame + sequence.start);
+            ReplayFrame(currentRelativeFrame);
         } else
         {
             // STORE AWAY FOR LATER USE
+            Debug.Log("ayyy. " + gameMaster.globalFrame + " - " + gameMaster.globalStart + " + " + sequence.start + " = " + currentRelativeFrame);
             //ReplayFrame(sequence.length + sequence.start);
             //transform.position = new Vector3(0f, -100f, 0f);
         }
@@ -119,29 +124,26 @@ public class TimeBody : MonoBehaviour
     {
         int shit = Mathf.Max(gameMaster.globalStart, gameMaster.globalFrame - gameMaster.sequenceFrameLimit);
         blockScript.Drop(null);
-        Debug.Log(shit + " " + basicHistory.Count);
+        //Debug.Log(shit + " " + basicHistory.Count);
         basicHistory.RemoveRange(0, shit);  // First frame is necessary for future restarts
         basicHistory.RemoveRange(1, basicHistory.Count - 1);
         blockHistory.RemoveRange(0, shit);
         blockHistory.RemoveRange(1, blockHistory.Count - 1);
-        Debug.Log("HHHHHH");
         ReplayFrame(0);
 
     }
-    void ReplayFrame(int index, bool useInput = true)
+    void ReplayFrame(int index)
     {
         //Debug.Log(index + ", " + basicHistory.Count);
         //if (isPlayer) index -= mySeq;
-        if (index < 0 ^ index >= basicHistory.Count) Debug.LogWarning("error, " + index + ", " + basicHistory.Count);
-        if (isPlayer) Debug.Log("playing, " + index + ", " + basicHistory.Count);
-        BasicFrame basicFrame = basicHistory[index];
-        transform.position = basicFrame.position;
-        transform.rotation = basicFrame.rotation;
-        rb.velocity = basicFrame.velocity;
-        rb.angularVelocity = basicFrame.angularVelocity;
-        //if (!useInput) Debug.LogError("Yeah " + name);
+
+        BasicFrame basicFrame = null;
+
         if (isBlock)
         {
+            if (index < 0 ^ index >= basicHistory.Count) Debug.LogWarning("error, " + index + ", " + basicHistory.Count);
+            basicFrame = basicHistory[index];
+            
             //Debug.Log("ÆÆÆÆÆÆÆÆÆÆÆ");
             BlockFrame blockFrame = blockHistory[index];
             GameObject legacyGrabber = null;
@@ -160,7 +162,10 @@ public class TimeBody : MonoBehaviour
         }
         if (isActor)
         {
-            ActorFrame actorFrame = actorHistory[index];
+            sequence = gameMaster.sequences[mySeq];
+            basicFrame = sequence.basicHistory[index];
+            if (index < 0 ^ index >= sequence.basicHistory.Count) Debug.LogWarning("error, " + index + ", " + sequence.basicHistory.Count);
+            ActorFrame actorFrame = sequence.actorHistory[index];
             TorsoSocket.transform.rotation = actorFrame.torsoRotation;
             HeadSocket.transform.rotation = actorFrame.headRotation;
             blockRotator.transform.rotation = actorFrame.blockRotation;
@@ -168,25 +173,31 @@ public class TimeBody : MonoBehaviour
             actor.UpdateShadow(actorFrame);
         }
 
+        transform.position = basicFrame.position;
+        transform.rotation = basicFrame.rotation;
+        rb.velocity = basicFrame.velocity;
+        rb.angularVelocity = basicFrame.angularVelocity;
     }
     void Record()
     {
         // ALL time objects record basic history, just in case
-        if (isActor)
+        if (isPlayer)
         {
+            sequence = gameMaster.sequences[mySeq];
             // actors record input & extra rotation as well.
             if (gameMaster.globalFrame-gameMaster.globalStart > gameMaster.sequenceFrameLimit)
             {
                 //TimeUp();
                 //Debug.LogError("bruh");
-                basicHistory.RemoveAt(gameMaster.currentSequenceStart);
-                actorHistory.RemoveAt(gameMaster.currentSequenceStart);
+                sequence.basicHistory.RemoveAt(0);
+                sequence.actorHistory.RemoveAt(0);
+                sequence.start++;
                 //Debug.Log("Removed at " + gameMaster.currentSequenceStart);
             }
             //actorAllRotation = Head.transform.rotation;
-            basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
-            actorHistory.Insert(actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump, actor.grab, actor.drop, actor.rotate, actor.shift));
-            //Debug.Log(basicHistory.Count);
+            sequence.basicHistory.Insert(sequence.basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
+            sequence.actorHistory.Insert(sequence.actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump, actor.grab, actor.drop, actor.rotate, actor.shift));
+            Debug.Log("starts at " + sequence.start);
         }
         else if (isBlock)
         {
@@ -218,12 +229,7 @@ public class TimeBody : MonoBehaviour
         ShadowActorProperties.id = actor.id;
         ShadowProperties.isShadow = true;
         ShadowProperties.isPlayer = false;
-        
         ShadowProperties.mySeq = gameMaster.seq;
-
-        ShadowProperties.basicHistory = basicHistory;
-        ShadowProperties.actorHistory = actorHistory;
-
         actor.id++;
     }
     /*
@@ -252,12 +258,12 @@ public class TimeBody : MonoBehaviour
         }
         if (isPlayer)
         {
-            ReplayFrame(gameMaster.currentSequenceStart+1, true);  // +1 because why not, gotem
+            ReplayFrame(gameMaster.globalStart);  // +1 because why not, gotem
         }
         else if (isShadow)
         {
             //Debug.LogError("BRUHHHH");
-            ReplayFrame(gameMaster.currentSequenceStart, false);  // when time is paused, set position and shit to the first frame
+            ReplayFrame(gameMaster.globalStart);  // when time is paused, set position and shit to the first frame
         }
         //else if (isShadow)
         //{
