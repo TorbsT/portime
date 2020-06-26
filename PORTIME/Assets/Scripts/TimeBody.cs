@@ -114,7 +114,7 @@ public class TimeBody : MonoBehaviour
         } else
         {
             // STORE AWAY FOR LATER USE
-            Debug.Log("ayyy. " + gameMaster.globalFrame + " - " + gameMaster.globalStart + " + " + sequence.start + " = " + currentRelativeFrame);
+            //Debug.Log("ayyy. " + gameMaster.globalFrame + " - " + gameMaster.globalStart + " + " + sequence.start + " = " + currentRelativeFrame);
             //ReplayFrame(sequence.length + sequence.start);
             //transform.position = new Vector3(0f, -100f, 0f);
         }

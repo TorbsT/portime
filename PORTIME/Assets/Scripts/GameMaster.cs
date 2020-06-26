@@ -10,6 +10,8 @@ public class GameMaster : MonoBehaviour
     TimeBody playerTB;
 
     public bool isRewinding;
+    [SerializeField] float rewindSnappiness = 1f; // does ABSOLUTELY nothing
+    [SerializeField] float rewindDuration = 3f;
 
     public int seq;
     public int globalFrame;  // STATIC, PIVOTED UPON
@@ -18,10 +20,11 @@ public class GameMaster : MonoBehaviour
 
     public int sequenceFrameLimit = 3*50;
 
-    [SerializeField] float rewindDuration = 3f;
+    
 
     float rewindTime = 0f;
-    [SerializeField] int globalRewindTo;
+    int globalRewindTo;
+
     int globalRewindStart;
 
     private void Awake()
@@ -91,16 +94,20 @@ public class GameMaster : MonoBehaviour
     }
     int GetCurrentRewindFrame()
     {
-        int frame;
-        frame = (int)(Mathf.Round((RewindFunction(rewindTime)/RewindFunction(rewindDuration)*(globalRewindStart-globalRewindTo))));
+        float frame;
+        frame = RewindFunction(rewindTime/rewindDuration) / RewindFunction(1);
         Debug.Log(frame);
+        if (frame < 0) frame = 0;
+        
+        frame *=(globalRewindStart-globalRewindTo);
+        frame = (Mathf.Floor(frame));
         //if (frame <= 0) Debug.LogWarning("test: " + globalRewindStart + " - " + RewindFunction(rewindTime) + " / " + RewindFunction(rewindDuration) + " * " + (globalRewindStart - GetNewGlobalStart()));
-        return frame;
+        return (int)frame;
     }
     float RewindFunction(float x)
     {
         float y;
-        y = Mathf.Pow(x, 1f);
+        y = -2f*rewindSnappiness*Mathf.Pow(x, 3f)+3f*rewindSnappiness*Mathf.Pow(x, 2f);
         return y;
     }
     public GameObject GetPlayer()
