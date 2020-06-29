@@ -96,7 +96,6 @@ public class GameMaster : MonoBehaviour
     {
         float frame;
         frame = RewindFunction(rewindTime/rewindDuration) / RewindFunction(1);
-        Debug.Log(frame);
         if (frame < 0) frame = 0;
         
         frame *=(globalRewindStart-globalRewindTo);

@@ -41,7 +41,8 @@ public class Interactable : MonoBehaviour
 
     public void Interact(GameObject interactor, string action)
     {
-        interactorScript = interactor.GetComponent<SelectionManager>();
+        if (interactor != null) interactorScript = interactor.GetComponent<SelectionManager>();
+        else interactorScript = null;
         if (interactor == player) isPlayer = true; else isPlayer = false;
         if (action == "watch" && isPlayer)
         {
@@ -73,16 +74,18 @@ public class Interactable : MonoBehaviour
     }
     public void HandleGrabFrame(GameObject interactor)
     {
-        if (interactor != grabber)
-        {
+        //if (interactor != grabber)
+        //{
             if (interactor == null)
             {
                 Interact(null, "drop");
+                Debug.Log("Dropped");
             } else
             {
                 Interact(interactor, "grab");
+                Debug.Log("Grabbed");
             }
-        }
+        //}
     }
     /*
     void FixedUpdate()

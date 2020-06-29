@@ -43,6 +43,8 @@ public class Actor : MonoBehaviour
     bool inputRotate;
     bool inputShift;
 
+    public bool isJumping = false;
+    bool wasJumping = false;
     bool isOnPhysObj = false;
     GameObject physObj;
 
@@ -113,12 +115,7 @@ public class Actor : MonoBehaviour
     }
     public void UpdateShadow(ActorFrame actorFrame)  // used for animation
     {
-        rotate = actorFrame.rotate;
-        mouseX = actorFrame.mouseX;
-        mouseY = actorFrame.mouseY;
-        moveSide = actorFrame.moveSide;
-        moveForward = actorFrame.moveForward;
-        jump = actorFrame.jump;
+        isJumping = actorFrame.isJumping;
         grab = actorFrame.grab;
         drop = actorFrame.drop;
         shift = actorFrame.shift;
@@ -128,9 +125,6 @@ public class Actor : MonoBehaviour
     }
     void PerformPhysics()
     {
-        mouseX *= mouseSensitivity;
-        mouseY *= mouseSensitivity * mouseSensitivityRatio;
-
         isOnPhysObj = false;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         if (!isGrounded)
@@ -147,13 +141,52 @@ public class Actor : MonoBehaviour
                 Debug.Log("BRRUUUUH");
                 isGrounded = true;
                 if (footCollider.gameObject != selectionManager.grabbedBlock) continue;
-                isGrounded = true;
                 isOnPhysObj = true;
                 physObj = footCollider.gameObject;
             }
+        }
+        if (isPlayer) BadMethod();
+    }
+    public void Animate()
+    {
+        if (isJumping && !wasJumping) animator.SetTrigger("JumpTrigger");
+        wasJumping = isJumping;
+        animator.SetBool("HoldBlock", (selectionManager.grabbedBlock != null));
+        animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
+    }
+    void GoodMethod()
+    {
+        if (moveSide * moveForward == 0)
+            rb.AddForce(10f * transform.forward * (moveSide + moveForward)*movementSpeed);
+        else
+            rb.AddForce(10f * transform.forward * (moveSide + moveForward)*movementSpeed / 2);
+        if (jump && isGrounded)
+            rb.AddForce(10f * transform.up * jumpForce);
+    }
+    void BadMethod()
+    {
+
+
+        mouseX *= mouseSensitivity;
+        mouseY *= mouseSensitivity * mouseSensitivityRatio;
+
+        Vector3 relVel = transform.InverseTransformDirection(rb.velocity);
+        relVel.x = moveSide * movementSpeed;
+        relVel.z = moveForward * movementSpeed;
+        if (isGrounded)
+        {
+            if (isOnPhysObj) physObj.GetComponent<Block>().JumpedOn();
+            if (jump)
+            {
+                isJumping = true;
+                relVel.y = jumpForce;
+            } else isJumping = false;
+        }
+        if (jump && isGrounded)
+        {
 
         }
-        BadMethod();
+        rb.velocity = transform.TransformDirection(relVel);
 
         transform.localRotation *= Quaternion.Euler(0f, mouseX, 0f);
         if (rotateTorso)
@@ -175,36 +208,7 @@ public class Actor : MonoBehaviour
             else
                 blockRotator.Rotate(0f, 90f, 0f);
         }
-    }
-    public void Animate()
-    {
-        if (jump) animator.SetTrigger("JumpTrigger");
-        animator.SetBool("HoldBlock", (selectionManager.grabbedBlock != null));
-        animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
-    }
-    void GoodMethod()
-    {
-        if (moveSide * moveForward == 0)
-            rb.AddForce(10f * transform.forward * (moveSide + moveForward)*movementSpeed);
-        else
-            rb.AddForce(10f * transform.forward * (moveSide + moveForward)*movementSpeed / 2);
-        if (jump && isGrounded)
-            rb.AddForce(10f * transform.up * jumpForce);
-    }
-    void BadMethod()
-    {
-        Vector3 relVel = transform.InverseTransformDirection(rb.velocity);
-        relVel.x = moveSide * movementSpeed;
-        relVel.z = moveForward * movementSpeed;
-        if (isGrounded && isOnPhysObj)
-        {
-            physObj.GetComponent<Block>().JumpedOn();
-        }
-        if (jump && isGrounded)
-        {
-            relVel.y = jumpForce;
-        }
-        rb.velocity = transform.TransformDirection(relVel);
+
     }
     Vector3 ClampVerticalRotation(Vector3 originalRotation)
     {

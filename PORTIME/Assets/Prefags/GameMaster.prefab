@@ -46,7 +46,7 @@ MonoBehaviour:
   actorTag: Actor
   isRewinding: 0
   rewindSnappiness: 1
-  rewindDuration: 3
+  rewindDuration: 5
   seq: 0
   globalFrame: 0
   globalStart: 0

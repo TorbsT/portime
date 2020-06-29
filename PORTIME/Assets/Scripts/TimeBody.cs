@@ -151,13 +151,14 @@ public class TimeBody : MonoBehaviour
             Actor[] actorArray = FindObjectsOfType(typeof(Actor)) as Actor[];
             foreach (Actor actorthing in actorArray)
             {
-                //Debug.Log("looking for " + blockFrame.grabberId + ", this one is " + actorthing.id);
+                Debug.Log("looking for " + blockFrame.grabberId + ", this one is " + actorthing.id);
                 if (actorthing.id == blockFrame.grabberId)
                     legacyGrabber = actorthing.gameObject;
             }
 
             //Debug.LogWarning("id: " + blockFrame.grabberId);
             //if (legacyGrabber != null ) Debug.LogWarning(", which is " + legacyGrabber.name);
+            Debug.Log("grabber is " + legacyGrabber);
             interactable.HandleGrabFrame(legacyGrabber);
         }
         if (isActor)
@@ -169,8 +170,10 @@ public class TimeBody : MonoBehaviour
             TorsoSocket.transform.rotation = actorFrame.torsoRotation;
             HeadSocket.transform.rotation = actorFrame.headRotation;
             blockRotator.transform.rotation = actorFrame.blockRotation;
-            selectionManager.ObjectInteraction(actorFrame.grab, actorFrame.drop);
-            actor.UpdateShadow(actorFrame);
+            if (!gameMaster.isRewinding)
+            {
+                actor.UpdateShadow(actorFrame);
+            }
         }
 
         transform.position = basicFrame.position;
@@ -196,8 +199,7 @@ public class TimeBody : MonoBehaviour
             }
             //actorAllRotation = Head.transform.rotation;
             sequence.basicHistory.Insert(sequence.basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
-            sequence.actorHistory.Insert(sequence.actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward, actor.jump, actor.grab, actor.drop, actor.rotate, actor.shift));
-            Debug.Log("starts at " + sequence.start);
+            sequence.actorHistory.Insert(sequence.actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.isJumping, actor.grab, actor.drop, actor.rotate, actor.shift));
         }
         else if (isBlock)
         {
@@ -212,6 +214,7 @@ public class TimeBody : MonoBehaviour
             basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
             int grabberId = -1;
             grabberId = interactable.grabberId;
+            Debug.Log(grabberId);
             blockHistory.Insert(blockHistory.Count, new BlockFrame(grabberId));
         }
     }
