@@ -73,7 +73,7 @@ Material:
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0
+    - _Glossiness: 1
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
@@ -93,7 +93,7 @@ Material:
     - Color_25FC105A: {r: 2, g: 2, b: 0, a: 0}
     - Color_F06325E5: {r: 0.88235295, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 0.88235295, g: 0, b: 0, a: 1}
-    - _Color: {r: 0.88235295, g: 0.8221869, b: 0, a: 1}
+    - _Color: {r: 0.990566, g: 0.9822644, b: 0.13550198, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
 --- !u!114 &3339513129681326085

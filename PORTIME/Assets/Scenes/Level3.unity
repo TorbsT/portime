@@ -763,27 +763,7 @@ PrefabInstance:
     - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.349
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
+      value: 8.51
       objectReference: {fileID: 0}
     - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
         type: 3}
@@ -1126,25 +1106,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee09f98ebe2d62b418b579381d6bb64e, type: 3}
---- !u!1 &1916436383 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2222967354837692827, guid: a380bedaf996c8847963403e12269fa7,
-    type: 3}
-  m_PrefabInstance: {fileID: 1177944553}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1916436388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1916436383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a58f4c00b9d3f048a2fe7be83ff0070, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rewindMaterial: {fileID: 2100000, guid: b29694a90abd02a40871b920977862e0, type: 2}
 --- !u!1001 &1941909112
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1388,26 +1349,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.796
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7822994458815209636, guid: edbba5bd6981d6e428cf05ae91984f1b,
         type: 3}
