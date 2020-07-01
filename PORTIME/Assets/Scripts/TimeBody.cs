@@ -165,6 +165,7 @@ public class TimeBody : MonoBehaviour
             basicFrame = sequence.basicHistory[index];
             if (index < 0 ^ index >= sequence.basicHistory.Count) Debug.LogWarning("error, " + index + ", " + sequence.basicHistory.Count);
             ActorFrame actorFrame = sequence.actorHistory[index];
+
             TorsoSocket.transform.rotation = actorFrame.torsoRotation;
             HeadSocket.transform.rotation = actorFrame.headRotation;
             blockRotator.transform.rotation = actorFrame.blockRotation;
@@ -173,10 +174,10 @@ public class TimeBody : MonoBehaviour
                 actor.UpdateShadow(actorFrame);
             }
         }
+        transform.rotation = basicFrame.rotation;
         if (!isActor || !gameMaster.shadowsOnlyInput || gameMaster.isRewinding)
         {
             transform.position = basicFrame.position;
-            transform.rotation = basicFrame.rotation;
             rb.velocity = basicFrame.velocity;
             rb.angularVelocity = basicFrame.angularVelocity;
         }
@@ -199,11 +200,11 @@ public class TimeBody : MonoBehaviour
             }
             //actorAllRotation = Head.transform.rotation;
             sequence.basicHistory.Insert(sequence.basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
-            sequence.actorHistory.Insert(sequence.actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.jump, actor.grab, actor.drop, actor.rotate, actor.shift, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward));
+            sequence.actorHistory.Insert(sequence.actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.jump, actor.grab, actor.drop, actor.rotate, actor.shift, actor.mouseX/4f, actor.mouseY*0.45f, actor.moveSide, actor.moveForward));
         }
         else if (isBlock)
         {
-            if (gameMaster.globalFrame > 3*gameMaster.sequenceFrameLimit)
+            if (gameMaster.globalFrame > gameMaster.sequenceFrameLimit)
             {
                 //TimeUp();
                 //Debug.LogError("bruh");

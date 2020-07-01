@@ -150,7 +150,7 @@ public class Actor : MonoBehaviour
                 physObj = footCollider.gameObject;
             }
         }
-        if (isPlayer) BadMethod();
+        if (isPlayer || gameMaster.shadowsOnlyInput) BadMethod();
     }
     public void Animate()
     {
@@ -183,13 +183,9 @@ public class Actor : MonoBehaviour
                 relVel.y = jumpForce;
             }
         }
-        if (jump && isGrounded)
-        {
-
-        }
         rb.velocity = transform.TransformDirection(relVel);
 
-        transform.localRotation *= Quaternion.Euler(0f, mouseX, 0f);
+        if (isPlayer) transform.localRotation *= Quaternion.Euler(0f, mouseX, 0f);
         if (rotateTorso)
         {
             TorsoSocket.localRotation *= Quaternion.Euler(0f, mouseY, 0f);
@@ -198,11 +194,11 @@ public class Actor : MonoBehaviour
         }
         else
         {
-            HeadSocket.Rotate(0f, mouseY, 0f, Space.Self);
+            if (isPlayer) HeadSocket.Rotate(0f, mouseY, 0f, Space.Self);
             //if (clampVerticalRotation)
             //    HeadSocket.transform.localEulerAngles = ClampVerticalRotation(TorsoSocket.transform.localEulerAngles);
         }
-        if (rotate)
+        if (rotate && isPlayer)
         {
             if (shift)
                 blockRotator.Rotate(0f, 0f, 90f);
