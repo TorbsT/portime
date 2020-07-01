@@ -6,17 +6,19 @@ public class Button : MonoBehaviour
     [SerializeField] Transform bottomPosition;
     [SerializeField] Transform topPosition;
     [SerializeField] GameObject buttonSocket;
-    [SerializeField] GameObject[] triggerMechs;
-
+    [SerializeField] int[] triggerIds;
 
     [SerializeField] bool isPressurePlate;
 
+    [SerializeField] Mechanism[] triggerMechs;
     readonly float holdTime = 1f;
     float holdFor;
+    
 
     Rigidbody rb;
     void Start()
     {
+        GetMechs();
         holdFor = 0f;
         if (isPressurePlate)
         {
@@ -60,16 +62,30 @@ public class Button : MonoBehaviour
     }
     void TriggerMechs()
     {
-        foreach (GameObject mech in triggerMechs)
+
+        foreach (Mechanism mech in triggerMechs)
         {
-            mech.GetComponent<Mechanism>().Trigger();
+            mech.Trigger();
         }
     }
     void UnTriggerMechs()
     {
-        foreach (GameObject mech in triggerMechs)
+        foreach (Mechanism mech in triggerMechs)
         {
-            mech.GetComponent<Mechanism>().UnTrigger();
+            mech.UnTrigger();
+        }
+    }
+    void GetMechs()
+    {
+        triggerMechs = new Mechanism[triggerIds.Length];
+        Mechanism[] mechArray = FindObjectsOfType(typeof(Mechanism)) as Mechanism[];
+        for (int i = 0; i < triggerIds.Length; i++)
+        {
+            int id = triggerIds[i];
+            foreach (Mechanism mech in mechArray)
+            {
+                if (id == mech.id) triggerMechs[i] = mech;
+            }
         }
     }
     public void Click()

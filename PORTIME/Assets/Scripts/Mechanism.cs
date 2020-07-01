@@ -2,20 +2,17 @@
 
 public class Mechanism : MonoBehaviour
 {
+    public int id;
     [SerializeField] bool isDoor = false;
     [SerializeField] Vector3 mechBottom = Vector3.zero;
     [SerializeField] Vector3 mechTop = Vector3.zero;
     [SerializeField] float openTime = 0.5f;
     [SerializeField] float closeRelation = 1f;
 
-    Transform mechSocket;
+    [SerializeField] Transform mechSocket;
     bool isActive;
     void Start()
     {
-        if (isDoor)
-        {
-            mechSocket = GameObject.Find("DoorSocket").transform;
-        }
     }
     void FixedUpdate()
     {

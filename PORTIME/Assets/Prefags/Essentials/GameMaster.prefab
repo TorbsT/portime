@@ -45,10 +45,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorTag: Actor
   isRewinding: 0
-  shadowsOnlyInput: 0
-  rewindSnappiness: 1
-  rewindDuration: 2
+  shadowsOnlyInput: 1
+  rewindSnappiness: 10
+  rewindDurationMax: 10
+  rewindDurationScalar: 0.25
   seq: 0
   globalFrame: 0
   globalStart: 0
-  sequenceFrameLimit: 150
+  sequenceFrameLimit: 3000
