@@ -10,6 +10,7 @@ public class GameMaster : MonoBehaviour
     TimeBody playerTB;
 
     public bool isRewinding;
+    public bool shadowsOnlyInput;
     [SerializeField] float rewindSnappiness = 1f; // does ABSOLUTELY nothing
     [SerializeField] float rewindDuration = 3f;
 

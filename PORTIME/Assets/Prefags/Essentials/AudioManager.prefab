@@ -47,18 +47,18 @@ MonoBehaviour:
   - name: Portime1
     clip: {fileID: 8300000, guid: 5838cca19bc32da49a110e4a0fbb1b18, type: 3}
     volume: 1
-    pitch: 1
+    pitch: 0.9
     loop: 1
     source: {fileID: 0}
   - name: Portime2
     clip: {fileID: 8300000, guid: 6b7ae1aabee9df94eac524720dd316bc, type: 3}
     volume: 1
-    pitch: 1
+    pitch: 0.9
     loop: 1
     source: {fileID: 0}
   - name: Portime3
     clip: {fileID: 8300000, guid: 504fe0d8780712e4d8598be6503f83cd, type: 3}
     volume: 1
-    pitch: 1
+    pitch: 0.9
     loop: 1
     source: {fileID: 0}

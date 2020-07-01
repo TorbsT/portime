@@ -7,11 +7,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2923800990132679870, guid: 096d13c06dc29684bad72e0695cf2c56,
+    - target: {fileID: -8468189054726295646, guid: 096d13c06dc29684bad72e0695cf2c56,
         type: 3}
-      propertyPath: m_Name
-      value: Shadow Variant
+      propertyPath: isPlayer
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 224867699934286341, guid: 096d13c06dc29684bad72e0695cf2c56,
+        type: 3}
+      propertyPath: hoverMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 910da7fcd56b0844e81d572b02cfa0c0, type: 2}
     - target: {fileID: 1090178889575421288, guid: 096d13c06dc29684bad72e0695cf2c56,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -67,15 +72,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6684168578114254898, guid: 096d13c06dc29684bad72e0695cf2c56,
+    - target: {fileID: 2923800990132679870, guid: 096d13c06dc29684bad72e0695cf2c56,
         type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8468189054726295646, guid: 096d13c06dc29684bad72e0695cf2c56,
-        type: 3}
-      propertyPath: isPlayer
-      value: 0
+      propertyPath: m_Name
+      value: Shadow Variant
       objectReference: {fileID: 0}
     - target: {fileID: 6143226818162771939, guid: 096d13c06dc29684bad72e0695cf2c56,
         type: 3}
@@ -97,11 +97,6 @@ PrefabInstance:
       propertyPath: shadowPrefab
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 224867699934286341, guid: 096d13c06dc29684bad72e0695cf2c56,
-        type: 3}
-      propertyPath: hoverMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 910da7fcd56b0844e81d572b02cfa0c0, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 096d13c06dc29684bad72e0695cf2c56, type: 3}
 --- !u!1 &6171806825213553132 stripped

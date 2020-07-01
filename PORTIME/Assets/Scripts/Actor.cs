@@ -43,8 +43,6 @@ public class Actor : MonoBehaviour
     bool inputRotate;
     bool inputShift;
 
-    public bool isJumping = false;
-    bool wasJumping = false;
     bool isOnPhysObj = false;
     GameObject physObj;
 
@@ -115,10 +113,17 @@ public class Actor : MonoBehaviour
     }
     public void UpdateShadow(ActorFrame actorFrame)  // used for animation
     {
-        isJumping = actorFrame.isJumping;
+        jump = actorFrame.jump;
         grab = actorFrame.grab;
         drop = actorFrame.drop;
         shift = actorFrame.shift;
+        if (gameMaster.shadowsOnlyInput)
+        {
+            mouseX = actorFrame.mouseX;
+            mouseY = actorFrame.mouseY;
+            moveForward = actorFrame.moveForward;
+            moveSide = actorFrame.moveSide;
+        }
         PerformPhysics();
         selectionManager.ObjectInteraction(grab, drop);
         Animate();
@@ -149,8 +154,7 @@ public class Actor : MonoBehaviour
     }
     public void Animate()
     {
-        if (isJumping && !wasJumping) animator.SetTrigger("JumpTrigger");
-        wasJumping = isJumping;
+        if (jump) animator.SetTrigger("JumpTrigger");
         animator.SetBool("HoldBlock", (selectionManager.grabbedBlock != null));
         animator.SetFloat("Velocity", rb.velocity.sqrMagnitude);
     }
@@ -165,8 +169,6 @@ public class Actor : MonoBehaviour
     }
     void BadMethod()
     {
-
-
         mouseX *= mouseSensitivity;
         mouseY *= mouseSensitivity * mouseSensitivityRatio;
 
@@ -178,9 +180,8 @@ public class Actor : MonoBehaviour
             if (isOnPhysObj) physObj.GetComponent<Block>().JumpedOn();
             if (jump)
             {
-                isJumping = true;
                 relVel.y = jumpForce;
-            } else isJumping = false;
+            }
         }
         if (jump && isGrounded)
         {

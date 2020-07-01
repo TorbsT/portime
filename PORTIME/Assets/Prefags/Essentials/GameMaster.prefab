@@ -45,6 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorTag: Actor
   isRewinding: 0
+  shadowsOnlyInput: 1
   rewindSnappiness: 1
   rewindDuration: 5
   seq: 0

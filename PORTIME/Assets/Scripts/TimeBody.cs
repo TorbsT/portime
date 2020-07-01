@@ -59,9 +59,7 @@ public class TimeBody : MonoBehaviour
             selectionManager = GetComponent<SelectionManager>();
             //Head = this.gameObject.transform.GetChild(0);
         }
-        if (isShadow && rb != null)
-            rb.isKinematic = true;
-            animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         if (isBlock)
         {
             interactable = GetComponent<Interactable>();
@@ -175,11 +173,13 @@ public class TimeBody : MonoBehaviour
                 actor.UpdateShadow(actorFrame);
             }
         }
-
-        transform.position = basicFrame.position;
-        transform.rotation = basicFrame.rotation;
-        rb.velocity = basicFrame.velocity;
-        rb.angularVelocity = basicFrame.angularVelocity;
+        if (!isActor || !gameMaster.shadowsOnlyInput || gameMaster.isRewinding)
+        {
+            transform.position = basicFrame.position;
+            transform.rotation = basicFrame.rotation;
+            rb.velocity = basicFrame.velocity;
+            rb.angularVelocity = basicFrame.angularVelocity;
+        }
     }
     void Record()
     {
@@ -199,7 +199,7 @@ public class TimeBody : MonoBehaviour
             }
             //actorAllRotation = Head.transform.rotation;
             sequence.basicHistory.Insert(sequence.basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
-            sequence.actorHistory.Insert(sequence.actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.isJumping, actor.grab, actor.drop, actor.rotate, actor.shift));
+            sequence.actorHistory.Insert(sequence.actorHistory.Count, new ActorFrame(TorsoSocket.rotation, HeadSocket.rotation, blockRotator.rotation, actor.jump, actor.grab, actor.drop, actor.rotate, actor.shift, actor.mouseX, actor.mouseY, actor.moveSide, actor.moveForward));
         }
         else if (isBlock)
         {
@@ -225,7 +225,7 @@ public class TimeBody : MonoBehaviour
 
     public void CreateShadow()
     {
-        GameObject Shadow = Instantiate(shadowPrefab, new Vector3(0f, -100f, 0f), Quaternion.identity);
+        GameObject Shadow = Instantiate(shadowPrefab, sequence.basicHistory[0].position, sequence.basicHistory[0].rotation);
         TimeBody ShadowProperties = Shadow.GetComponent<TimeBody>();
         Actor ShadowActorProperties = Shadow.GetComponent<Actor>();
 

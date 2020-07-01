@@ -78,8 +78,8 @@ public class Block : MonoBehaviour
             Vector3 playerToSocket = (grabberScript.blockRotator.position - grabberScript.transform.position);
 
 
-            rb.AddForce(swingForce * travelVector);
-            rb.AddForce(distanceKeeperForce * (Vector3.SqrMagnitude(playerToBlock) - Vector3.SqrMagnitude(playerToSocket)) * playerToBlock);
+            rb.AddForce(rb.mass*swingForce * travelVector);
+            rb.AddForce(rb.mass*distanceKeeperForce * (Vector3.SqrMagnitude(playerToBlock) - Vector3.SqrMagnitude(playerToSocket)) * playerToBlock);
             //rb.angularVelocity = (grabberScript.blockRotator.rotation.eulerAngles-transform.rotation.eulerAngles);
             //transform.rotation = Quaternion.Lerp(transform.rotation, grabberScript.blockRotator.rotation, rotateSpeed);
             //rb.AddTorque(grabberScript.blockRotator.rotation.x-transform.rotation.x, 0f, 0f);
