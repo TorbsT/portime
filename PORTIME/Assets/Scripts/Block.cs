@@ -84,7 +84,7 @@ public class Block : MonoBehaviour
             //transform.rotation = Quaternion.Lerp(transform.rotation, grabberScript.blockRotator.rotation, rotateSpeed);
             //rb.AddTorque(grabberScript.blockRotator.rotation.x-transform.rotation.x, 0f, 0f);
             //rb.angularVelocity = Vector3.zero;
-            transform.rotation = grabberScript.blockRotator.rotation;
+            transform.rotation = Quaternion.Lerp(transform.rotation, grabberScript.blockRotator.localRotation, rotateSpeed);
         }
         //else rb.useGravity = true;
     }

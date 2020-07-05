@@ -16,9 +16,9 @@ public class Actor : MonoBehaviour
     public float groundDistance = 0.4f;
     public float mouseSensitivity = 2f;
     public float mouseSensitivityRatio = 0.3f;
-    public float movementSpeed = 1f;
+    public float maxSpeed = 1f;
     public float jumpForce = 20f;
-
+    [SerializeField] float movementAcceleration = 1f;
 
     public int id = 0;
 
@@ -45,7 +45,7 @@ public class Actor : MonoBehaviour
 
     bool isOnPhysObj = false;
     GameObject physObj;
-
+    PhysicMaterial groundedObjectPMat;
     public float viewRange = 60.0f;
 
 
@@ -130,27 +130,43 @@ public class Actor : MonoBehaviour
     }
     void PerformPhysics()
     {
+        float standDistance = Mathf.Infinity;
+        Collider standCollider = null;
         isOnPhysObj = false;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        if (!isGrounded)
+        groundedObjectPMat = null;
+
+        Collider[] footColliders = Physics.OverlapSphere(groundCheck.position, groundDistance);
+        foreach (Collider footCollider in footColliders)
         {
-            Collider[] footColliders = Physics.OverlapSphere(groundCheck.position, groundDistance);
-            foreach (Collider footCollider in footColliders)
+            if (footCollider.gameObject.layer == 10) continue; // Player layer
+            Vector3 closestPoint = footCollider.ClosestPoint(groundCheck.position);
+            if (Vector3.SqrMagnitude(closestPoint - groundCheck.position) < standDistance)
             {
-                if (footCollider.gameObject.layer != 9) continue;
-                if (footCollider.gameObject.GetComponent<Rigidbody>() == null)
-                {
-                    Debug.LogError("WHAAAAAATTTTTT");
-                    continue;
-                }
-                Debug.Log("BRRUUUUH");
-                isGrounded = true;
-                if (footCollider.gameObject != selectionManager.grabbedBlock) continue;
-                isOnPhysObj = true;
-                physObj = footCollider.gameObject;
+                standCollider = footCollider;
+                standDistance = Vector3.SqrMagnitude(closestPoint - groundCheck.position);
             }
         }
-        if (isPlayer || gameMaster.shadowsOnlyInput) BadMethod();
+
+        if (standCollider != null)
+        {
+            if (standCollider.gameObject.layer == 9 && standCollider.gameObject.GetComponent<Rigidbody>() != null)
+            {
+                isGrounded = true;
+                if (standCollider.gameObject == selectionManager.grabbedBlock)
+                {
+                    isOnPhysObj = true;
+                    physObj = standCollider.gameObject;
+                }
+            }
+            groundedObjectPMat = standCollider.material;
+        }
+
+        if (isPlayer || gameMaster.shadowsOnlyInput)
+        {
+            PreviouslyInBadMethod();
+            GoodMethod();
+        }
     }
     public void Animate()
     {
@@ -160,21 +176,42 @@ public class Actor : MonoBehaviour
     }
     void GoodMethod()
     {
-        if (moveSide * moveForward == 0)
-            rb.AddForce(10f * transform.forward * (moveSide + moveForward)*movementSpeed);
-        else
-            rb.AddForce(10f * transform.forward * (moveSide + moveForward)*movementSpeed / 2);
-        if (jump && isGrounded)
-            rb.AddForce(10f * transform.up * jumpForce);
+        float dynamicFriction = 0f;
+        float staticFriction = 0f;
+        Vector3 walkDirection = Vector3.zero;
+        if (groundedObjectPMat != null)
+        {
+            dynamicFriction = groundedObjectPMat.dynamicFriction;
+            staticFriction = groundedObjectPMat.staticFriction;
+            Debug.Log(groundedObjectPMat.name + " " + dynamicFriction);
+        }
+        walkDirection = transform.forward * moveForward + transform.right * moveSide;
+        walkDirection = Vector3.Normalize(walkDirection);
+
+        
+        Vector3 horizontalVector = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        float horizontalSpeed = Vector3.SqrMagnitude(horizontalVector);
+        Vector3 addHorizontalVector = walkDirection * movementAcceleration * (dynamicFriction + 0.5f);
+        float newHorizontalSpeed = Vector3.SqrMagnitude(horizontalVector + addHorizontalVector);
+
+        if (horizontalSpeed < maxSpeed || newHorizontalSpeed < horizontalSpeed) rb.AddForce(addHorizontalVector);
+
+        if (walkDirection == Vector3.zero)
+        {
+            
+        }
+
+        if (isGrounded)
+        {
+            if (isOnPhysObj) physObj.GetComponent<Block>().JumpedOn();
+            if (jump) rb.AddForce(10f * transform.up * jumpForce);
+        }
     }
     void BadMethod()
     {
-        mouseX *= mouseSensitivity;
-        mouseY *= mouseSensitivity * mouseSensitivityRatio;
-
         Vector3 relVel = transform.InverseTransformDirection(rb.velocity);
-        relVel.x = moveSide * movementSpeed;
-        relVel.z = moveForward * movementSpeed;
+        relVel.x = moveSide * maxSpeed;
+        relVel.z = moveForward * maxSpeed;
         if (isGrounded)
         {
             if (isOnPhysObj) physObj.GetComponent<Block>().JumpedOn();
@@ -184,6 +221,11 @@ public class Actor : MonoBehaviour
             }
         }
         rb.velocity = transform.TransformDirection(relVel);
+    }
+    void PreviouslyInBadMethod()
+    {
+        mouseX *= mouseSensitivity;
+        mouseY *= mouseSensitivity * mouseSensitivityRatio;
 
         if (isPlayer) transform.localRotation *= Quaternion.Euler(0f, mouseX, 0f);
         if (rotateTorso)
@@ -205,7 +247,6 @@ public class Actor : MonoBehaviour
             else
                 blockRotator.Rotate(0f, 90f, 0f);
         }
-
     }
     Vector3 ClampVerticalRotation(Vector3 originalRotation)
     {

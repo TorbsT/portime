@@ -38,7 +38,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1513417227891046578}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0db5291addf52dd47a963aa686287a07, type: 2}
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.55
@@ -220,8 +220,9 @@ MonoBehaviour:
   groundDistance: 0.4
   mouseSensitivity: 4
   mouseSensitivityRatio: 0.6
-  movementSpeed: 4
-  jumpForce: 8
+  maxSpeed: 96
+  jumpForce: 96
+  movementAcceleration: 128
   id: 0
   mouseX: 0
   mouseY: 0
@@ -232,7 +233,6 @@ MonoBehaviour:
   drop: 0
   rotate: 0
   shift: 0
-  isJumping: 0
   viewRange: 45
 --- !u!114 &6143226818162771939
 MonoBehaviour:

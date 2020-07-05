@@ -215,7 +215,6 @@ public class TimeBody : MonoBehaviour
             basicHistory.Insert(basicHistory.Count, new BasicFrame(transform.position, transform.rotation, rb.velocity, rb.angularVelocity));
             int grabberId = -1;
             grabberId = interactable.grabberId;
-            Debug.Log(grabberId);
             blockHistory.Insert(blockHistory.Count, new BlockFrame(grabberId));
         }
     }
